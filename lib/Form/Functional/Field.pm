@@ -36,6 +36,7 @@ has type_constraints => (
     provides => {
         type_constraints        => 'elements',
         _count_type_constraints => 'count',
+        _first_type_constraint  => [ get => 0 ],
     },
 );
 
