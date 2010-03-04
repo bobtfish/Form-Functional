@@ -10,6 +10,9 @@ has form => (
     is       => 'ro',
     isa      => Form,
     required => 1,
+    handles  => {
+        fields => 'fields',
+    },
 );
 
 has input_values => (
@@ -34,8 +37,19 @@ has values => (
     },
 );
 
+has _results => (
+    traits   => [qw(Hash)],
+    isa      => HashRef,
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build__results',
+    handles  => {
+        _results => 'elements',
+    },
+);
+
 method BUILD {
-    $self->_validate;
+    $self->_results;
 }
 
 method _build_values {
@@ -45,7 +59,7 @@ method _build_values {
         $_->should_coerce
             ? ($_->name => $_->type_constraint->coerce($inputs{ $_->name }))
             : ($_->name => $inputs{ $_->name });
-    } $self->form->fields;
+    } $self->fields;
 
     return \%values;
 }
@@ -62,15 +76,13 @@ method _validate_field ($field) {
     return undef;
 }
 
-method _validate {
-    my @fields = $self->form->fields;
-    my %results;
+method _build__results {
+    my %results = map {
+        my $msgs = $self->_validate_field($_);
+        defined $msgs ? ($_->name => $msgs) : ();
+    } $self->fields;
 
-    for my $field (@fields) {
-        my $msgs = $self->_validate_field($field);
-        $results{ $field->name } = $msgs
-            if defined $msgs;
-    }
+    return \%results;
 }
 
 __PACKAGE__->meta->make_immutable;

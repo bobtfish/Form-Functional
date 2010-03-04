@@ -67,6 +67,14 @@ has coercion => (
     predicate => 'has_coercion'
 );
 
+override BUILDARGS => sub {
+    my $args = super;
+    return {
+        %{ $args },
+        (exists $args->{coercion} ? (coerce => 1) : ()),
+    };
+};
+
 method BUILD {
     $self->_build_type_constraint;
 }
