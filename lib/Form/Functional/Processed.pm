@@ -35,6 +35,7 @@ has values => (
 );
 
 method BUILD {
+    $self->_validate;
 }
 
 method _build_values {
@@ -52,15 +53,24 @@ method _build_values {
 method _validate_field ($field) {
     if (!$self->value_exists_for($field->name)) {
         return undef unless $field->is_required;
-
-        ...;
+        return [$field->required_message];
     }
 
-    my $value = $self->value_for($field->name);
-    if (defined (my $msg = $field->type_constraint->validate($value))) {
-    }
+    my $msgs = $field->type_constraint->validate_all($self->value_for($field->name));
+    return $msgs if defined $msgs;
 
     return undef;
+}
+
+method _validate {
+    my @fields = $self->form->fields;
+    my %results;
+
+    for my $field (@fields) {
+        my $msgs = $self->_validate_field($field);
+        $results{ $field->name } = $msgs
+            if defined $msgs;
+    }
 }
 
 __PACKAGE__->meta->make_immutable;

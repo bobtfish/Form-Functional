@@ -8,6 +8,7 @@ use MooseX::Types -declare => [qw(
     IntersectionTypeConstraint
     ConstraintList
     FieldCoercion
+    RequiredMessage
 )];
 
 class_type Form, { class => 'Form::Functional' };
@@ -24,9 +25,18 @@ coerce FieldCoercion, from TypeConstraint, via {
     $_->coercion->_compiled_type_coercion
 };
 coerce FieldCoercion, from ArrayRef[TypeConstraint], via {
-    # FIXME: fold this
-    map { $_->coercion->_compiled_type_coercion } @{ $_ }
+    my @coercions = map { $_->coercion->_compiled_type_coercion } @{ $_ };
+    return sub {
+        my $value = $_;
+        for my $coercion (@coercions) {
+            local $_ = $value;
+            $value = $coercion->();
+        }
+    };
 };
+
+subtype RequiredMessage, as CodeRef;
+coerce RequiredMessage, from Str, via { my $msg = $_; sub { $msg } };
 
 __PACKAGE__->meta->make_immutable;
 

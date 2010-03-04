@@ -4,7 +4,7 @@ use Moose::Role;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw(Bool ArrayRef);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
-use Form::Functional::Types qw(ConstraintList FieldCoercion IntersectionTypeConstraint);
+use Form::Functional::Types qw(ConstraintList FieldCoercion IntersectionTypeConstraint RequiredMessage);
 use aliased 'Moose::Meta::TypeCoercion';
 use aliased 'MooseX::Meta::TypeConstraint::Intersection';
 use namespace::autoclean;
@@ -19,6 +19,19 @@ has required => (
     isa      => Bool,
     required => 1,
     reader   => 'is_required',
+);
+
+has required_message_cb => (
+    traits   => [qw(Code)],
+    is       => 'ro',
+    isa      => RequiredMessage,
+    coerce   => 1,
+    init_arg => 'required_message',
+    lazy     => 1,
+    builder  => '_build_required_message_cb',
+    handles  => {
+        required_message => 'execute_method',
+    },
 );
 
 has type_constraint => (
@@ -81,6 +94,10 @@ method _build_type_constraint {
     }
 
     return $tc;
+}
+
+method _build_required_message_cb {
+    return "Field ${\$self->name} is required";
 }
 
 1;
