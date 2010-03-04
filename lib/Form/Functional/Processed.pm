@@ -16,7 +16,7 @@ has input_values => (
     traits   => [qw(Hash)],
     isa      => HashRef,
     required => 1,
-    provides => {
+    handles  => {
         input_values => 'elements',
     },
 );
@@ -27,7 +27,7 @@ has values => (
     init_arg => undef,
     lazy     => 1,
     builder  => '_build_values',
-    provides => {
+    handles  => {
         values           => 'elements',
         value_for        => 'get',
         value_exists_for => 'exists',
@@ -45,7 +45,7 @@ method _build_values {
         $_->should_coerce
             ? ($_->name => $_->type_constraint->coerce($inputs{ $_->name }))
             : ($_->name => $inputs{ $_->name });
-    } $self->form->fields
+    } $self->form->fields;
 
     return \%values;
 }

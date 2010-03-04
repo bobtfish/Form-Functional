@@ -46,7 +46,7 @@ has type_constraints => (
     traits   => [qw(Array)],
     isa      => ConstraintList,
     required => 1,
-    provides => {
+    handles  => {
         type_constraints        => 'elements',
         _count_type_constraints => 'count',
         _first_type_constraint  => [ get => 0 ],
