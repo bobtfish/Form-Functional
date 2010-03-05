@@ -67,11 +67,11 @@ method _build_values {
 method _validate_field ($field) {
     if (!$self->value_exists_for($field->name)) {
         return undef unless $field->is_required;
-        return [[$field->required_message]];
+        return [$field->required_message];
     }
 
     my $msgs = $field->type_constraint->validate_all($self->value_for($field->name));
-    return $msgs if defined $msgs;
+    return [map { $_->[0] } $msgs] if defined $msgs;
 
     return undef;
 }
