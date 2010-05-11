@@ -67,17 +67,21 @@ has coercion => (
     predicate => 'has_coercion'
 );
 
-override BUILDARGS => sub {
-    my $args = super;
+around BUILDARGS => sub {
+    my ($orig, $self) = (shift, shift);
+    my $args = $self->$orig(@_);
     return {
         %{ $args },
         (exists $args->{coercion} ? (coerce => 1) : ()),
     };
 };
 
-method BUILD {
+method BUILD {}
+
+after BUILD => sub {
+    my $self = shift;
     $self->_build_type_constraint;
-}
+};
 
 method _build_type_constraint {
     my $tc = Intersection->new(
