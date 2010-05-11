@@ -11,13 +11,13 @@ use aliased 'Form::Functional::Field';
 use TestTypes qw/ UCOnly /;
 
 my $form = Form::Functional->new(
-    fields => {
+    fields => [
         a_field => Field->new(
             coerce => 0,
             required => 1,
             type_constraints => [ Str, UCOnly ],
         ),
-    },
+    ],
 );
 
 ok $form, 'Have form';

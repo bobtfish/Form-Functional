@@ -1,9 +1,11 @@
 package Form::Functional::Types;
 
 use MooseX::Types::Moose qw(Str ArrayRef HashRef CodeRef);
+use MooseX::Types::Structured qw(Map);
 use MooseX::Types -declare => [qw(
     Form
     Field
+    Fields
     TypeConstraint
     IntersectionTypeConstraint
     ConstraintList
@@ -45,6 +47,9 @@ coerce InputValues, from HashRef, via {
     my $v = $_;
     +{ map { ($_ => [$v->{$_}]) } keys %{ $v } }
 };
+
+my $map = Map[Str, Field];
+subtype Fields, as ArrayRef, where { $map->check({ @{ $_ } }) };
 
 __PACKAGE__->meta->make_immutable;
 

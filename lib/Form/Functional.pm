@@ -3,14 +3,13 @@ package Form::Functional;
 use Moose 0.90;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw(Str);
-use MooseX::Types::Structured qw(Map);
-use Form::Functional::Types qw(Field);
+use Form::Functional::Types qw(Field Fields);
 use MooseX::Types::LoadableClass qw(ClassName);
 use namespace::autoclean;
 
 has fields => (
-    traits   => [qw(Hash)],
-    isa      => Map[Str, Field],
+    traits   => [qw(Array)],
+    isa      => Fields,
     required => 1,
     handles  => {
         fields => 'elements',
