@@ -39,7 +39,7 @@ my %in_vals = (
 
     my %out_vals = $res->values;
 
-    is_deeply \%out_vals, \%in_vals, 'Output values as per input values';
+    is_deeply \%out_vals, { map { ($_ => [$in_vals{$_}]) } keys %in_vals }, 'Output values as per input values';
 }
 
 

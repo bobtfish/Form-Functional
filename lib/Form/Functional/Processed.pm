@@ -2,7 +2,7 @@ package Form::Functional::Processed;
 
 use Moose;
 use Method::Signatures::Simple;
-use Form::Functional::Types qw(Form);
+use Form::Functional::Types qw(Form InputValues);
 use MooseX::Types::Moose qw(HashRef);
 use namespace::autoclean;
 
@@ -17,7 +17,8 @@ has form => (
 
 has input_values => (
     traits   => [qw(Hash)],
-    isa      => HashRef,
+    isa      => InputValues,
+    coerce   => 1,
     required => 1,
     handles  => {
         input_values => 'elements',
@@ -30,12 +31,19 @@ has values => (
     init_arg => undef,
     lazy     => 1,
     builder  => '_build_values',
+    reader   => '_values',
     handles  => {
-        values           => 'elements',
-        value_for        => 'get',
-        value_exists_for => 'exists',
+        values => 'elements',
     },
 );
+
+method values_for ($name) {
+    @{ $self->_values->{$name} };
+}
+
+method values_exist_for ($name) {
+    @{ $self->_values->{$name} || [] } > 0;
+}
 
 has errors => (
     traits   => [qw(Hash)],
@@ -57,7 +65,7 @@ method _build_values {
 
     my %values = map {
         $_->should_coerce
-            ? ($_->name => $_->type_constraint->coerce($inputs{ $_->name }))
+            ? ($_->name => [map { $_->type_constraint->coerce($_) } @{ $inputs{ $_->name } }])
             : ($_->name => $inputs{ $_->name });
     } $self->fields;
 
@@ -65,15 +73,12 @@ method _build_values {
 }
 
 method _validate_field ($field) {
-    if (!$self->value_exists_for($field->name)) {
+    if (!$self->values_exist_for($field->name)) {
         return undef unless $field->is_required;
         return [$field->required_message($self)];
     }
 
-    my $msgs = $field->type_constraint->validate_all($self->value_for($field->name));
-    return [map { $_->[0] } $msgs] if defined $msgs;
-
-    return undef;
+    $field->validate($self->values_for($field->name));
 }
 
 method _build_errors {

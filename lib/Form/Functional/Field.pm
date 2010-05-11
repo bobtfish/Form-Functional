@@ -1,6 +1,6 @@
 package Form::Functional::Field;
 
-use Moose::Role;
+use Moose;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw(Bool ArrayRef);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
@@ -8,6 +8,12 @@ use Form::Functional::Types qw(ConstraintList FieldCoercion IntersectionTypeCons
 use aliased 'Moose::Meta::TypeCoercion';
 use aliased 'MooseX::Meta::TypeConstraint::Intersection';
 use namespace::autoclean;
+
+with 'MooseX::Traits';
+
+has '+_trait_namespace' => (
+    default => __PACKAGE__,
+);
 
 has name => (
     is       => 'ro',
@@ -76,12 +82,9 @@ around BUILDARGS => sub {
     };
 };
 
-method BUILD {}
-
-after BUILD => sub {
-    my $self = shift;
+method BUILD {
     $self->_build_type_constraint;
-};
+}
 
 method _build_type_constraint {
     my $tc = Intersection->new(
@@ -111,5 +114,15 @@ method _build_type_constraint {
 method _build_required_message_cb {
     return ["Field [_1] is required", $self->name];
 }
+
+method validate (@values) {
+    my $msgs = [map { $_->[0] } grep defined, map {
+        $self->type_constraint->validate_all($_)
+    } @values];
+
+    return @{ $msgs } ? $msgs : undef;
+}
+
+__PACKAGE__->meta->make_immutable;
 
 1;
