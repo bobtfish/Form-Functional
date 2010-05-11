@@ -18,6 +18,10 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
         req_int => Int,
         opt_str => Optional[Str],
         opt_int => Optional[Int],
+        complex => Optional[Dict[
+            foo => Str,
+            bar => Int,
+        ]],
         @$extra
     ];
 
@@ -27,6 +31,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
     my @ok = (
         { req_int => 1, req_str => 'foo' },
         { req_int => 1, req_str => 'foo', opt_int => 1, opt_str => 'bar' },
+        { req_int => 1, req_str => 'foo', complex => { foo => 'quux', bar => 3 } },
     );
 
     foreach my $try (@ok) {
@@ -40,6 +45,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
         {},
         { req_int => 'foo', req_str => 'foo' },
         { req_int => 1, req_str => 'foo', opt_int => 'bar', opt_str => {} },
+        { req_int => 1, req_str => 'foo', complex => { foo => {}, bar => 'quux' } },
     );
 
     foreach my $try (@fail) {
