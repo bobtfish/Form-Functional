@@ -5,10 +5,10 @@ use Template::Declare;
 use MooseX::Types::LoadableClass qw/ ClassName /;
 use namespace::autoclean;
 
-method render ($form_or_processed) {
-    my @fields = $form_or_processed->fields;
-    Template::Declare->init( dispatch_to => [ $self->temlate_class ] );
-    Template::Declare->show( 'form' );
+method render ($form_or_processed, $data) {
+    $data ||= {};
+    Template::Declare->init( dispatch_to => [ $self->template_class ] );
+    Template::Declare->show( 'form', $form_or_processed, $data );
 }
 
 has template_class => (
