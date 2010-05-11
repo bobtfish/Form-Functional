@@ -4,8 +4,7 @@ use Test::More;
 use Form::Functional;
 
 my $form = Form::Functional->new(
-    fields => [
-    ],
+    fields => { },
 );
 
 ok $form, 'Have form';

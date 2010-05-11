@@ -62,30 +62,34 @@ method BUILD {
 
 method _build_values {
     my %inputs = $self->input_values;
+    my %fields = $self->fields;
 
     my %values = map {
-        $_->should_coerce
-            ? ($_->name => [map { $_->type_constraint->coerce($_) } @{ $inputs{ $_->name } }])
-            : ($_->name => $inputs{ $_->name });
-    } $self->fields;
+        my $k = $_;
+        $fields{$_}->should_coerce
+            ? ($_ => [map { $fields{$k}->type_constraint->coerce($_) } @{ $inputs{ $_ } }])
+            : ($_ => $inputs{ $_ });
+    } keys %fields;
 
     return \%values;
 }
 
-method _validate_field ($field) {
-    if (!$self->values_exist_for($field->name)) {
+method _validate_field ($name, $field) {
+    if (!$self->values_exist_for($name)) {
         return undef unless $field->is_required;
-        return [$field->required_message($self)];
+        return [$field->required_message($name, $self)];
     }
 
-    $field->validate($self->values_for($field->name));
+    $field->validate($self->values_for($name));
 }
 
 method _build_errors {
+    my %fields = $self->fields;
+
     my %errors = map {
-        my $msgs = $self->_validate_field($_);
-        defined $msgs ? ($_->name => $msgs) : ();
-    } $self->fields;
+        my $msgs = $self->_validate_field($_ => $fields{$_});
+        defined $msgs ? ($_ => $msgs) : ();
+    } keys %fields;
 
     return \%errors;
 }

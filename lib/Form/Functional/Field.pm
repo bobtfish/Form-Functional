@@ -15,12 +15,6 @@ has '+_trait_namespace' => (
     default => __PACKAGE__,
 );
 
-has name => (
-    is       => 'ro',
-    isa      => NonEmptySimpleStr,
-    required => 1,
-);
-
 has required => (
     isa      => Bool,
     required => 1,
@@ -112,7 +106,7 @@ method _build_type_constraint {
 }
 
 method _build_required_message_cb {
-    return ["Field [_1] is required", $self->name];
+    return sub { ["Field [_1] is required", $_[1]] };
 }
 
 method validate (@values) {

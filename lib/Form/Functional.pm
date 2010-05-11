@@ -2,14 +2,15 @@ package Form::Functional;
 # ABSTRACT: Reasonable Forms taking advantage of immutability and function data structures.
 use Moose 0.90;
 use Method::Signatures::Simple;
-use MooseX::Types::Moose qw(ArrayRef);
+use MooseX::Types::Moose qw(Str);
+use MooseX::Types::Structured qw(Map);
 use Form::Functional::Types qw(Field);
 use MooseX::Types::LoadableClass qw(ClassName);
 use namespace::autoclean;
 
 has fields => (
-    traits   => [qw(Array)],
-    isa      => ArrayRef[Field],
+    traits   => [qw(Hash)],
+    isa      => Map[Str, Field],
     required => 1,
     handles  => {
         fields => 'elements',
