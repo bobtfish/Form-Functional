@@ -3,9 +3,8 @@ use Moose;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw/ Any /;
 use Moose::Util qw/ find_meta /;
-use namespace::autoclean;
-
 use aliased 'Form::Functional::Field';
+use namespace::autoclean;
 
 method generate_form_from ($class_or_meta) {
     my $meta = blessed($class_or_meta) ? $class_or_meta : find_meta($class_or_meta);
