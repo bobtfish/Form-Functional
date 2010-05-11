@@ -7,11 +7,11 @@ use Test::More;
 use MooseX::Types::Moose qw/Str/;
 use Form::Functional;
 
-use TestField;
+use aliased 'Form::Functional::Field';
 
 my $form = Form::Functional->new(
     fields => [
-        TestField->new(
+        Field->new(
             name => 'a_field',
             coerce => 0,
             required => 1,

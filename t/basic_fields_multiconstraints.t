@@ -9,12 +9,12 @@ use Test::More;
 use MooseX::Types::Moose qw/Str/;
 use Form::Functional;
 
-use TestField;
+use aliased 'Form::Functional::Field';
 use TestTypes qw/ UCOnly /;
 
 my $form = Form::Functional->new(
     fields => [
-        TestField->new(
+        Field->new(
             name => 'a_field',
             coerce => 0,
             required => 1,
@@ -42,8 +42,8 @@ my %in_vals = (
 
     my %out_vals = $res->values;
 
-    is scalar($res->_results), 0, 'No validation failures';
-    is_deeply \%out_vals, \%in_vals, 'Output values as per input values';
+    is scalar($res->_errors), 0, 'No validation failures';
+    is_deeply \%out_vals, { map { ($_ => [$in_vals{$_}]) } keys %in_vals }, 'Output values as per input values';
 }
 
 %in_vals = (
@@ -57,7 +57,7 @@ my %in_vals = (
 
     my %out_vals = $res->values;
 
-    my %results = $res->_results;
+    my %results = $res->_errors;
     is scalar(keys %results), 1, '1 field failed';
     my $error = delete $results{a_field};
     is scalar(keys %results), 0, 'failed field was the expected field';
@@ -66,7 +66,7 @@ my %in_vals = (
     like $error->[0]->[0], qr/with value avalue/, 'Correct message (2/2)';
     isa_ok $error->[0]->[1], 'Moose::Meta::TypeConstraint';
 
-    is_deeply \%out_vals, \%in_vals, 'Output values as per input values';
+    is_deeply \%out_vals, { map { ($_ => [$in_vals{$_}]) } keys %in_vals }, 'Output values as per input values';
 }
 
 done_testing;
