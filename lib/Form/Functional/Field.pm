@@ -105,7 +105,7 @@ method _build_type_constraint {
 }
 
 method _build_required_message_cb {
-    return "Field ${\$self->name} is required";
+    return ["Field [_1] is required", $self->name];
 }
 
 1;

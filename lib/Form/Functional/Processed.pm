@@ -37,19 +37,19 @@ has values => (
     },
 );
 
-has _results => (
+has errors => (
     traits   => [qw(Hash)],
     isa      => HashRef,
     init_arg => undef,
     lazy     => 1,
-    builder  => '_build__results',
+    builder  => '_build_errors',
     handles  => {
-        _results => 'elements',
+        _errors => 'elements',
     },
 );
 
 method BUILD {
-    $self->_results;
+    $self->_errors;
 }
 
 method _build_values {
@@ -76,13 +76,13 @@ method _validate_field ($field) {
     return undef;
 }
 
-method _build__results {
-    my %results = map {
+method _build_errors {
+    my %errors = map {
         my $msgs = $self->_validate_field($_);
         defined $msgs ? ($_->name => $msgs) : ();
     } $self->fields;
 
-    return \%results;
+    return \%errors;
 }
 
 __PACKAGE__->meta->make_immutable;
