@@ -14,7 +14,7 @@ use MooseX::Types -declare => [qw(
     InputValues
 )];
 
-class_type Form, { class => 'Form::Functional' };
+role_type Form, { role => 'Form::Functional::Field::Compound' };
 class_type TypeConstraint, { class => 'Moose::Meta::TypeConstraint' };
 class_type IntersectionTypeConstraint, { class => 'MooseX::Meta::TypeConstraint::Intersection' };
 

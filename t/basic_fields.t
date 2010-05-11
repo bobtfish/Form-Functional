@@ -15,6 +15,8 @@ my $form = Form::Functional->new(
             type_constraints => [ Str ],
         ),
     ],
+    required         => 1,
+    type_constraints => [],
 );
 
 ok $form, 'Have form';

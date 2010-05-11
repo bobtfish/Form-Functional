@@ -54,9 +54,9 @@ has type_constraints => (
 );
 
 has coerce => (
-    isa      => Bool,
-    required => 1,
-    reader   => 'should_coerce',
+    isa     => Bool,
+    default => 0,
+    reader  => 'should_coerce',
 );
 
 has coercion => (

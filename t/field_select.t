@@ -20,6 +20,8 @@ my $form = Form::Functional->new({
             required         => 1,
         }),
     ],
+    required         => 1,
+    type_constraints => [],
 });
 
 isa_ok($form, 'Form::Functional');
