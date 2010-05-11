@@ -1,12 +1,9 @@
-package Form::Functional::Renderer::TD;
-use Moose;
-use Method::Signatures::Simple;
+package Form::Functional::Renderer;
+use Moose::Role;
 use namespace::autoclean;
 
-method render ($form_or_processed) {
-    my @fields = $form_or_processed->fields;
-}
+requires qw/
+    render
+/;
 
-with 'Form::Functional::Renderer';
-
-__PACKAGE__->meta->make_immutable;
+1;
