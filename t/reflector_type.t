@@ -12,6 +12,17 @@ use MooseX::Types::Moose qw/ Str Int HashRef /;
 use_ok 'Form::Functional::Reflector::Type'
     or BAIL_OUT();
 
+my $reflector = Form::Functional::Reflector::Type->new;
+
+throws_ok { $reflector->generate_form_from('ThisTypeDoesNotExist') }
+    qr/not find type constraint named 'ThisTypeDoesNotExist'/, 'Non existant type throws';
+
+throws_ok { $reflector->generate_form_from(bless {}, 'ThisTypeDoesNotExist') }
+    qr/is not a Moose::Meta::TypeConstraint/, 'Not a type constraint throws';
+
+throws_ok { $reflector->generate_form_from(Str) }
+    qr/is not a Dict/, 'Not a Dict type constraint throws';
+
 foreach my $extra ( [], [slurpy(Dict)] ) {
     my $tc = Dict[
         req_str => Str,
@@ -25,7 +36,6 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
         @$extra
     ];
 
-    my $reflector = Form::Functional::Reflector::Type->new;
     my $form; isa_ok $form = $reflector->generate_form_from($tc), 'Form::Functional';
 
     my @ok = (

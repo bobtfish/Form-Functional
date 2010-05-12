@@ -9,8 +9,10 @@ use namespace::autoclean;
 
 method generate_form_from ($type_or_name) {
     my $tc = blessed($type_or_name) ? $type_or_name : find_type_constraint($type_or_name);
-    confess "Could not find type constraint named $type_or_name, is is defined?"
+    confess "Could not find type constraint named '$type_or_name', is is defined?"
         unless $tc;
+    confess "$tc is not a Moose::Meta::TypeConstraint"
+        unless $tc->isa('Moose::Meta::TypeConstraint');
     confess "$tc is not a Dict"
         unless $tc->is_a_type_of(Dict);
 
