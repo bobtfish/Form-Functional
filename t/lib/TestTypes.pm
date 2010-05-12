@@ -6,5 +6,6 @@ use Moose::Util::TypeConstraints;
 use MooseX::Types::Moose qw/ Str /;
 
 subtype UCOnly, as Str, where { uc($_) eq $_ };
+coerce UCOnly, from Str, via { uc($_) };
 
 1;

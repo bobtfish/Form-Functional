@@ -98,12 +98,12 @@ method _build_type_constraint {
     );
 
     if ($self->should_coerce) {
-        my $coercion = Coercion->new(
+        my $coercion = TypeCoercion->new(
             type_constraint => $tc,
         );
 
         confess "Coercing a field with more than one type constraint requires an explicit coercion rule"
-            if $self->_count_type_constraints > 0 && !$self->has_coercion;
+            if $self->_count_type_constraints > 1 && !$self->has_coercion;
 
         my $converter = $self->has_coercion
             ? $self->coercion
@@ -111,7 +111,7 @@ method _build_type_constraint {
 
         $coercion->_compiled_type_coercion($converter);
 
-        $tc->coercion($tc);
+        $tc->coercion($coercion);
     }
 
     return $tc;
