@@ -54,13 +54,23 @@ has results => (
     lazy     => 1,
     builder  => '_build_results',
     handles  => {
-        _errors  => 'elements',
         _results => 'elements',
     },
 );
 
+has errors => (
+    traits   => [qw(Hash)],
+    isa      => HashRef,
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build_errors',
+    handles  => {
+        errors => 'elements',
+    },
+);
+
 method BUILD {
-    $self->_errors;
+    $self->errors;
 }
 
 method _build_values {
@@ -98,16 +108,22 @@ method _build_results {
     return \%errors;
 }
 
-method has_errors {
+method _build_errors {
     my %results = $self->_results;
-    return 0 unless %results;
-
-    my ($subresults, $rest) = part {
-        blessed $_ && $_->isa(__PACKAGE__) ? 0 : 1
+    my %errors = map {
+        ($_ => [map {
+            blessed $_ && $_->isa(__PACKAGE__)
+                ? { $_->errors }
+                : $_
+        } @{ $results{$_} }])
     } keys %results;
 
-    return 1 if @{ $rest };
-    return !!any { $_->has_errors } @{ $subresults };
+    return \%errors;
+}
+
+method has_errors {
+    my %errors = $self->errors;
+    !!keys %errors;
 }
 
 __PACKAGE__->meta->make_immutable;

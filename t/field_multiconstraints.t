@@ -41,7 +41,7 @@ my %in_vals = (
 
     my %out_vals = $res->values;
 
-    is scalar($res->_errors), 0, 'No validation failures';
+    is scalar($res->_results), 0, 'No validation failures';
     is_deeply \%out_vals, { map { ($_ => [$in_vals{$_}]) } keys %in_vals }, 'Output values as per input values';
 }
 
@@ -57,7 +57,7 @@ my %in_vals = (
     my %out_vals = $res->values;
 
     ok $res->has_errors;
-    my %results = $res->_errors;
+    my %results = $res->_results;
     is scalar(keys %results), 1, '1 field failed';
     my $error = delete $results{a_field};
     is scalar(keys %results), 0, 'failed field was the expected field';
