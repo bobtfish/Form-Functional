@@ -14,6 +14,11 @@ my $form = Form::Functional->new(
             required => 1,
             type_constraints => [ Str ],
         ),
+        another_field => Field->new(
+            coerce => 0,
+            required => 0,
+            type_constraints => [ Str ],
+        ),
     ],
     required         => 1,
     type_constraints => [],
@@ -26,18 +31,22 @@ isa_ok $form->process, 'Form::Functional::Processed';
 
 {
     my $res = $form->process({});
-    is_deeply {$res->values}, { a_field => undef }, 'No defined values';
+    is_deeply {$res->values}, { a_field => undef, another_field => undef }, 'No defined values';
 }
 
 {
     my %in_vals = (a_field => 'a_value');
     my %exp_out_vals = map { ($_ => [$in_vals{$_}]) } keys %in_vals;
+    $exp_out_vals{another_field} = undef;
 
     my $res = $form->process({%in_vals});
     ok $res, 'Have result';
     isa_ok $res, 'Form::Functional::Processed';
 
     is_deeply {$res->values}, \%exp_out_vals, 'Output values as per input values';
+    ok $res->values_exist_for('a_field'), 'Values exist for a_field';
+    ok !$res->values_exist_for('another_field'), 'Values do not exist for another_field';
+    ok !$res->values_exist_for('this_field_not_in_this_form'), 'Values do not exist for field not in this form';
 
     $res = $form->process({%in_vals, some => 'other', random => 'crap'});
     is_deeply {$res->values}, \%exp_out_vals, 'Output values ignore unknown fields data';
