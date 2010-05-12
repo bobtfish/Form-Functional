@@ -65,6 +65,7 @@ has coercion => (
     is        => 'ro',
     isa       => FieldCoercion,
     lazy      => 1,
+    coerce    => 1,
     builder   => '_build_coercion',
     predicate => 'has_coercion'
 );
