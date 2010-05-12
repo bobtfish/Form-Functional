@@ -15,3 +15,4 @@ has with_builder => ( is => 'ro', builder => '_build_with_builder', required => 
 sub _build_with_builder { 5 }
 
 __PACKAGE__->meta->make_immutable;
+1;

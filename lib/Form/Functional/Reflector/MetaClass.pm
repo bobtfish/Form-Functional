@@ -19,14 +19,9 @@ method generate_form_from ($class_or_meta) {
         my $name = $attr->init_arg;
         my $optional = ($attr->has_builder || $attr->has_default || !$attr->is_required) ? 1 : 0;
         my $tc = $attr->has_type_constraint ? $attr->type_constraint : Any;
-        # FIXME - Coercions
-#        $params{$name} = $optional ? Optional[$tc] : $tc;
-#        if ($tc->has_coercion) {
-#            $coercions{$name} = $tc->coercion;
-#        }
         push(@fields,
             $name => Field->new(
-                coerce => 0,
+                coerce => $tc->has_coercion,
                 required => !$optional,
                 type_constraints => [ $tc ],
             )
