@@ -1,4 +1,5 @@
 package Form::Functional::Types;
+# ABSTRACT: Type definitions for Form::Functional
 
 use MooseX::Types::Moose qw(Str ArrayRef HashRef CodeRef);
 use MooseX::Types::Structured qw(Map);

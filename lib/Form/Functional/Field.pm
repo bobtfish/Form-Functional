@@ -1,4 +1,5 @@
 package Form::Functional::Field;
+# ABSTRACT: Represents a field within a form
 
 use Moose;
 use Method::Signatures::Simple;

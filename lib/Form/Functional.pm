@@ -1,5 +1,5 @@
 package Form::Functional;
-# ABSTRACT: Reasonable Forms taking advantage of immutability and function data structures
+# ABSTRACT: Reasonable Forms taking advantage of immutability and functional data structures
 
 use Moose 0.90;
 use Method::Signatures::Simple;

@@ -1,4 +1,5 @@
 package Form::Functional::Field::Compound;
+# ABSTRACT: A compound field (containing other fields) within a form
 
 use MooseX::Role::Parameterized;
 use Form::Functional::Types qw(Field Fields);

@@ -1,4 +1,5 @@
 package Form::Functional::Processed;
+# ABSTRACT: Represents the results of a form validation.
 
 use Moose;
 use Method::Signatures::Simple;
