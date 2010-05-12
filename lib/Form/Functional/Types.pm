@@ -9,6 +9,7 @@ use MooseX::Types -declare => [qw(
     Field
     Fields
     TypeConstraint
+    TypeCoercion
     IntersectionTypeConstraint
     ConstraintList
     FieldCoercion
@@ -18,6 +19,7 @@ use MooseX::Types -declare => [qw(
 
 role_type CompoundField, { role => 'Form::Functional::Field::Compound' };
 class_type TypeConstraint, { class => 'Moose::Meta::TypeConstraint' };
+class_type TypeCoercion, { class => 'Moose::Meta::TypeCoercion' };
 class_type IntersectionTypeConstraint, { class => 'MooseX::Meta::TypeConstraint::Intersection' };
 
 class_type Field, { class => 'Form::Functional::Field' };
@@ -28,6 +30,9 @@ coerce ConstraintList, from TypeConstraint, via { [$_] };
 subtype FieldCoercion, as CodeRef;
 coerce FieldCoercion, from TypeConstraint, via {
     $_->coercion->_compiled_type_coercion
+};
+coerce FieldCoercion, from TypeCoercion, via {
+    $_->_compiled_type_coercion
 };
 coerce FieldCoercion, from ArrayRef[TypeConstraint], via {
     my @coercions = map { $_->coercion->_compiled_type_coercion } @{ $_ };

@@ -35,4 +35,23 @@ can_ok $res, 'values';
 is_deeply {$res->values}, {a_field => ['FOOBAR']},
     'Data coerced as expected';
 
+                          # Type   TypeCoercion      CodeRef
+foreach my $coercion_from (UCOnly, UCOnly->coercion, UCOnly->coercion->_compiled_type_coercion) {
+    my $form = Form::Functional->new(
+        fields => [
+            a_field => Field->new(
+                coercion => UCOnly->coercion,
+                required => 1,
+                type_constraints => [ UCOnlyNoCoercion ],
+            ),
+        ],
+        required         => 1,
+        type_constraints => [],
+    );
+
+    my $res = $form->process({a_field => 'foobar'});
+    is_deeply {$res->values}, {a_field => ['FOOBAR']},
+        'Data coerced as expected';
+}
+
 done_testing;
