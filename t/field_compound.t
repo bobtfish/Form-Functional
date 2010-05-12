@@ -90,7 +90,6 @@ my $form = Form::Functional->new({
     my %errors = $res->_errors;
     ok exists($errors{date}), 'Date field has an error';
     is ref($errors{date}), 'ARRAY', 'Error data is an array';
-    diag explain { %errors };
 }
 
 done_testing;

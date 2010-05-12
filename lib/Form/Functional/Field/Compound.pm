@@ -43,8 +43,12 @@ role {
 
     method validate => sub {
         my ($self, @values) = @_;
-        my @ret = map { { $self->process($_)->_errors } } @values;
-        return length @ret ? \@ret : ();
+        my @ret = grep {
+            scalar keys %{ $_ }
+        } map {
+            +{ $self->process($_)->_errors }
+        } @values;
+        return @ret ? \@ret : undef;
     };
 };
 

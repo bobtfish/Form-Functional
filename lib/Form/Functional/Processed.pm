@@ -80,7 +80,8 @@ method _validate_field ($name, $field) {
         return [$field->required_message($name, $self)];
     }
 
-    $field->validate($self->values_for($name));
+    my $ret = $field->validate($self->values_for($name));
+    return $ret;
 }
 
 method _build_errors {
