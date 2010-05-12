@@ -33,9 +33,7 @@ method generate_form_from ($class_or_meta) {
         );
     }
 
-    $self->form_class->new(
-         fields => \@fields,
-     );
+    $self->_build_form_from_fields(@fields);
 }
 
 with 'Form::Functional::Reflector';
