@@ -37,8 +37,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
     foreach my $try (@ok) {
         ok $tc->check($try), 'Can check ok with TC';
         my $result = $form->process($try);
-        my @errors = $result->_errors;
-        is scalar(@errors), 0, 'No errors';
+        ok !$result->has_errors, 'No errors';
     }
 
     my @fail = (
@@ -51,8 +50,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
     foreach my $try (@fail) {
         ok !$tc->check($try), 'Cannot check ok with TC';
         my $result = $form->process($try);
-        my @errors = $result->_errors;
-        ok scalar(@errors) > 0, 'Has errors';
+        ok $result->has_errors, 'Has errors';
     }
 }
 

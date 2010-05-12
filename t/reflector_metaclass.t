@@ -30,8 +30,7 @@ my $reflector = Form::Functional::Reflector::MetaClass->new;
     foreach my $try (@ok) {
         lives_ok { TestReflectedClass->new($try) } 'Can construct real class';
         my $result = $form->process($try);
-        my @errors = $result->_errors;
-        is scalar(@errors), 0, 'No errors';
+        ok !$result->has_errors, 'No errors';
     }
 
     my @fail = (
@@ -43,8 +42,7 @@ my $reflector = Form::Functional::Reflector::MetaClass->new;
     foreach my $try (@fail) {
         dies_ok { TestReflectedClass->new($try) } 'Cannot construct real class';
         my $result = $form->process($try);
-        my @errors = $result->_errors;
-        ok scalar(@errors) > 0, 'Has errors';
+        ok $result->has_errors, 'Has errors';
     }
 }
 
@@ -62,9 +60,8 @@ my $reflector = Form::Functional::Reflector::MetaClass->new;
     foreach my $try (@ok) {
         lives_ok { TestReflectedClassCompound->new($try) } 'Can construct real compound class';
         my $result = $form->process($try);
-        my @errors = $result->_errors;
-        is scalar(@errors), 0, 'No errors'
-            or Dwarn [$try, \@errors];
+        ok !$result->has_errors
+            or Dwarn [$try, [$result->errors]];
     }
 }
 
