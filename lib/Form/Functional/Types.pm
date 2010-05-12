@@ -3,7 +3,7 @@ package Form::Functional::Types;
 use MooseX::Types::Moose qw(Str ArrayRef HashRef CodeRef);
 use MooseX::Types::Structured qw(Map);
 use MooseX::Types -declare => [qw(
-    Form
+    CompoundField
     Field
     Fields
     TypeConstraint
@@ -14,7 +14,7 @@ use MooseX::Types -declare => [qw(
     InputValues
 )];
 
-role_type Form, { role => 'Form::Functional::Field::Compound' };
+role_type CompoundField, { role => 'Form::Functional::Field::Compound' };
 class_type TypeConstraint, { class => 'Moose::Meta::TypeConstraint' };
 class_type IntersectionTypeConstraint, { class => 'MooseX::Meta::TypeConstraint::Intersection' };
 

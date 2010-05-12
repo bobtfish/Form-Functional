@@ -2,13 +2,13 @@ package Form::Functional::Processed;
 
 use Moose;
 use Method::Signatures::Simple;
-use Form::Functional::Types qw(Form InputValues);
+use Form::Functional::Types qw(CompoundField InputValues);
 use MooseX::Types::Moose qw(HashRef);
 use namespace::autoclean;
 
-has form => (
+has field => (
     is       => 'ro',
-    isa      => Form,
+    isa      => CompoundField,
     required => 1,
     handles  => {
         fields => 'fields',

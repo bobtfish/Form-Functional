@@ -36,7 +36,7 @@ role {
     method process => sub {
         my ($self, $values) = @_;
         return $self->_new_processed({
-            form         => $self,
+            field        => $self,
             input_values => $values,
         });
     };
