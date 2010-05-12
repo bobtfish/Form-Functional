@@ -56,6 +56,7 @@ my %in_vals = (
 
     my %out_vals = $res->values;
 
+    ok $res->has_errors;
     my %results = $res->_errors;
     is scalar(keys %results), 1, '1 field failed';
     my $error = delete $results{a_field};

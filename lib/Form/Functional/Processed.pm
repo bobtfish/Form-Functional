@@ -3,6 +3,7 @@ package Form::Functional::Processed;
 
 use Moose;
 use Method::Signatures::Simple;
+use List::AllUtils qw(part any);
 use Form::Functional::Types qw(CompoundField InputValues);
 use MooseX::Types::Moose qw(HashRef);
 use namespace::autoclean;
@@ -46,14 +47,15 @@ method values_exist_for ($name) {
     @{ $self->_values->{$name} || [] } > 0;
 }
 
-has errors => (
+has results => (
     traits   => [qw(Hash)],
     isa      => HashRef,
     init_arg => undef,
     lazy     => 1,
-    builder  => '_build_errors',
+    builder  => '_build_results',
     handles  => {
-        _errors => 'elements',
+        _errors  => 'elements',
+        _results => 'elements',
     },
 );
 
@@ -85,7 +87,7 @@ method _validate_field ($name, $field) {
     return $ret;
 }
 
-method _build_errors {
+method _build_results {
     my %fields = $self->fields;
 
     my %errors = map {
@@ -94,6 +96,18 @@ method _build_errors {
     } keys %fields;
 
     return \%errors;
+}
+
+method has_errors {
+    my %results = $self->_results;
+    return 0 unless %results;
+
+    my ($subresults, $rest) = part {
+        blessed $_ && $_->isa(__PACKAGE__) ? 0 : 1
+    } keys %results;
+
+    return 1 if @{ $rest };
+    return !!any { $_->has_errors } @{ $subresults };
 }
 
 __PACKAGE__->meta->make_immutable;
