@@ -11,6 +11,7 @@ has opt_int => ( is => 'ro', required => 0, isa => Int );
 
 has with_default => ( is => 'ro', default => 5, required => 1, );
 has with_builder => ( is => 'ro', builder => '_build_with_builder', required => 1 );
+has with_no_init_arg => ( init_arg => undef, is => 'ro', default => 5, required => 1, );
 
 sub _build_with_builder { 5 }
 
