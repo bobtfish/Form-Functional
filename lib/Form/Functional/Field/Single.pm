@@ -1,4 +1,5 @@
 package Form::Functional::Field::Single;
+# ABSTRACT: A single standalone field within a form
 
 use Moose::Role;
 use namespace::autoclean;

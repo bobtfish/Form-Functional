@@ -1,4 +1,5 @@
 package Form::Functional::Field::Select;
+# ABSTRACT: A select list field within a form
 
 use Moose::Role;
 use Method::Signatures::Simple;
