@@ -78,7 +78,19 @@ my $form = Form::Functional->new({
     ],
 });
 
-my $res = $form->process({ date => { year => 1986, month => 14, day => 13 } });
-diag explain { $res->_errors };
+{
+    my $res = $form->process({ date => { year => 1980, month => 4, day => 23 } });
+    my %errors = $res->_errors;
+    is scalar(%errors), 0, q{No errors, it's my birthday!}
+        or diag explain { %errors };
+}
+
+{
+    my $res = $form->process({ date => { year => 1986, month => 14, day => 13 } });
+    my %errors = $res->_errors;
+    ok exists($errors{date}), 'Date field has an error';
+    is ref($errors{date}), 'ARRAY', 'Error data is an array';
+    diag explain { %errors };
+}
 
 done_testing;
