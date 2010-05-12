@@ -3,7 +3,7 @@ package Form::Functional::Field::Compound;
 
 use MooseX::Role::Parameterized;
 use Form::Functional::Types qw(Field Fields);
-use MooseX::Types::LoadableClass qw(ClassName);
+use MooseX::Types::LoadableClass 0.002 qw(LoadableClass);
 use namespace::autoclean;
 
 parameter fields_options => (
@@ -26,7 +26,7 @@ role {
 
     has processed_class => (
         is      => 'ro',
-        isa     => ClassName,
+        isa     => LoadableClass,
         coerce  => 1,
         default => 'Form::Functional::Processed',
         handles => {

@@ -2,8 +2,6 @@ package Form::Functional;
 # ABSTRACT: Reasonable Forms taking advantage of immutability and functional data structures
 
 use Moose 0.90;
-use Method::Signatures::Simple;
-use MooseX::Types::LoadableClass qw(ClassName);
 use namespace::autoclean;
 
 extends 'Form::Functional::Field';
