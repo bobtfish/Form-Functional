@@ -27,7 +27,7 @@ can_ok $form, 'process';
 
 {
     my $res = $form->process({});
-    is_deeply {$res->values}, { a_field => undef }, 'No defined values';
+    is_deeply {$res->values}, { }, 'No defined values';
 }
 
 my %in_vals = (

@@ -35,13 +35,12 @@ isa_ok $form->process, 'Form::Functional::Processed';
 
 {
     my $res = $form->process({});
-    is_deeply {$res->values}, { a_field => undef, another_field => undef }, 'No defined values';
+    is_deeply {$res->values}, { }, 'No values';
 }
 
 {
     my %in_vals = (a_field => 'a_value');
     my %exp_out_vals = map { ($_ => [$in_vals{$_}]) } keys %in_vals;
-    $exp_out_vals{another_field} = undef;
 
     my $res = $form->process({%in_vals});
     ok $res, 'Have result';

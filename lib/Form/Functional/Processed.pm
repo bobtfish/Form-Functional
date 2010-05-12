@@ -78,10 +78,14 @@ method _build_values {
     my %fields = $self->fields;
 
     my %values = map {
-        my $k = $_;
-        $fields{$_}->should_coerce
-            ? ($_ => [map { $fields{$k}->type_constraint->coerce($_) } @{ $inputs{ $_ } }])
-            : ($_ => $inputs{ $_ });
+        exists $inputs{$_}
+            ? do {
+                my $k = $_;
+                $fields{$_}->should_coerce
+                    ? ($_ => [map { $fields{$k}->type_constraint->coerce($_) } @{ $inputs{ $_ } }])
+                    : ($_ => $inputs{ $_ });
+            }
+            : ()
     } keys %fields;
 
     return \%values;
