@@ -111,11 +111,14 @@ method _build_results {
 method _build_errors {
     my %results = $self->_results;
     my %errors = map {
-        ($_ => [map {
+        my @e = map {
             blessed $_ && $_->isa(__PACKAGE__)
-                ? { $_->errors }
+                ? ($_->has_errors
+                    ? { $_->errors }
+                    : ())
                 : $_
-        } @{ $results{$_} }])
+        } @{ $results{$_} };
+        @e ? ($_ => \@e) : ()
     } keys %results;
 
     return \%errors;
