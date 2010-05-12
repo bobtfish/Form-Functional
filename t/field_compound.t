@@ -92,4 +92,10 @@ my $form = Form::Functional->new({
     is ref($errors{date}), 'ARRAY', 'Error data is an array';
 }
 
+# TODO - Test coercions
+# 11:52 <t0m> coercions on the compound field itself fire before we pass the values into it?
+# 11:52 <rafl> yeah, i think so. i'm just wondering where they should fire. both makes sense
+# 11:52 <t0m> so that the higher level coercion gets to mangle the data before the individual sub-fields?
+# 11:53 <rafl> yes, that's what happens currently, i think
+
 done_testing;
