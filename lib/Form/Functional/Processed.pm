@@ -129,6 +129,11 @@ method has_errors {
     !!keys %errors;
 }
 
+method fields_with_errors {
+    my %errors = $self->errors;
+    return keys %errors;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
