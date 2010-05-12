@@ -22,6 +22,8 @@ my $form = Form::Functional->new(
 ok $form, 'Have form';
 can_ok $form, 'process';
 
+isa_ok $form->process, 'Form::Functional::Processed';
+
 {
     my $res = $form->process({});
     is_deeply {$res->values}, { a_field => undef }, 'No defined values';
