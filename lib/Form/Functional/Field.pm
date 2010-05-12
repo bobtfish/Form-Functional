@@ -3,14 +3,14 @@ package Form::Functional::Field;
 use Moose;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw(Bool ArrayRef);
+use MooseX::Types::LoadableClass qw(ClassName);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 use Form::Functional::Types qw(ConstraintList FieldCoercion IntersectionTypeConstraint RequiredMessage);
 use aliased 'Moose::Meta::TypeCoercion';
 use aliased 'MooseX::Meta::TypeConstraint::Intersection';
-use MooseX::Traits 0.09;
 use namespace::autoclean;
 
-with 'MooseX::Traits';
+with 'MooseX::Traits' => { -version => 0.09 };
 
 has '+_trait_namespace' => (
     default => __PACKAGE__,
@@ -68,6 +68,16 @@ has coercion => (
     predicate => 'has_coercion'
 );
 
+has error_class => (
+    is      => 'ro',
+    isa     => ClassName,
+    coerce  => 1,
+    default => 'Form::Functional::Error',
+    handles => {
+        _new_error => 'new',
+    },
+);
+
 around BUILDARGS => sub {
     my ($orig, $self) = (shift, shift);
     my $args = $self->$orig(@_);
@@ -107,15 +117,26 @@ method _build_type_constraint {
 }
 
 method _build_required_message_cb {
-    return sub { ["Field [_1] is required", $_[1]] };
+    return sub {
+        $self->_new_error({
+            message   => "Field [_1] is required",
+            arguments => [$_[1]],
+        });
+    };
 }
 
 method validate (@values) {
-    my $msgs = [map { $_->[0] } grep defined, map {
+    my @msgs = map {
+        $self->_new_error({
+            message                => $_->[0],
+            failed_type_constraint => $_->[1],
+        })
+    } map { @{ $_ } } grep defined, map {
         $self->type_constraint->validate_all($_)
-    } @values];
+    } @values;
 
-    return @{ $msgs } ? $msgs : undef;
+    return unless @msgs;
+    return \@msgs;
 }
 
 __PACKAGE__->meta->make_immutable;

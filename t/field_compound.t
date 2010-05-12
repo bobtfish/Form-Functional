@@ -80,7 +80,7 @@ my $form = Form::Functional->new({
 
 {
     my $res = $form->process({ date => { year => 1980, month => 4, day => 23 } });
-    my %errors = $res->_errors;
+    my %errors = { $res->_errors }->{date}->[0]->_errors;
     is scalar(%errors), 0, q{No errors, it's my birthday!}
         or diag explain { %errors };
 }

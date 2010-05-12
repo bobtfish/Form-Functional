@@ -61,9 +61,9 @@ my %in_vals = (
     my $error = delete $results{a_field};
     is scalar(keys %results), 0, 'failed field was the expected field';
     is ref($error), 'ARRAY', 'Error is an array ref';
-    like $error->[0]->[0], qr/Validation failed for 'TestTypes::UCOnly'/, 'Correct message (1/2)';
-    like $error->[0]->[0], qr/with value avalue/, 'Correct message (2/2)';
-    isa_ok $error->[0]->[1], 'Moose::Meta::TypeConstraint';
+    like $error->[0]->message, qr/Validation failed for 'TestTypes::UCOnly'/, 'Correct message (1/2)';
+    like $error->[0]->message, qr/with value avalue/, 'Correct message (2/2)';
+    ok $error->[0]->has_failed_type_constraint;
 
     is_deeply \%out_vals, { map { ($_ => [$in_vals{$_}]) } keys %in_vals }, 'Output values as per input values';
 }
