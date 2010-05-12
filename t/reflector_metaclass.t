@@ -7,13 +7,37 @@ use Devel::Dwarn;
 use Test::More;
 use Test::Exception;
 
+use Class::MOP::Class;
 use TestReflectedClass;
 use TestReflectedClassCompound;
 
 use_ok 'Form::Functional::Reflector::MetaClass'
     or BAIL_OUT();
 
+{
+    package Non::Moose::Class;
+    use strict;
+    use warnings;
+
+    our $VERSION = 0.1;
+}
+
+Class::MOP::Class->create(
+    'CMOPClass' => (
+        version => 0.1,
+    )
+);
+
 my $reflector = Form::Functional::Reflector::MetaClass->new;
+
+throws_ok { $reflector->generate_form_from('This::Class::Does::Not::Exist') }
+    qr/is is loaded/, 'Error for non-existent/non-loaded classes';
+
+throws_ok { $reflector->generate_form_from('Non::Moose::Class') }
+    qr/ould not find metaclass/, 'Error for non-moose (POOP) classes';
+
+throws_ok { $reflector->generate_form_from('CMOPClass') }
+    qr/does not have a Moose metaclass/, 'Error for non-moose (CMOP) classes';
 
 {
     my $form;

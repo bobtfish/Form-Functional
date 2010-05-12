@@ -7,9 +7,17 @@ use aliased 'Form::Functional::Field';
 use namespace::autoclean;
 
 method generate_form_from ($class_or_meta) {
-    my $meta = blessed($class_or_meta) ? $class_or_meta : find_meta($class_or_meta);
+    my $meta = blessed($class_or_meta)
+        ? $class_or_meta
+        : do {
+            confess "Could not find $class_or_meta, is is loaded?"
+                unless Class::MOP::is_class_loaded($class_or_meta);
+            find_meta $class_or_meta
+        };
     confess "Could not find metaclass for $class_or_meta, is is loaded?"
         unless $meta;
+    confess $meta->name . " does not have a Moose metaclass, cannot reflect" # Fuck you if you can find_meta
+        unless $meta->isa('Moose::Meta::Class');                             # but have no ->name
 
     my @fields;
 
