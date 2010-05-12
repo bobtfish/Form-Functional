@@ -7,13 +7,15 @@ use Form::Functional;
 
 use aliased 'Form::Functional::Field';
 
+my $field = Field->new({
+    coerce => 0,
+    required => 1,
+    type_constraints => [ Str ],
+});
+
 my $form = Form::Functional->new(
     fields => [
-        a_field => Field->new(
-            coerce => 0,
-            required => 1,
-            type_constraints => [ Str ],
-        ),
+        a_field => $field,
     ],
     required         => 1,
     type_constraints => [],
@@ -21,6 +23,8 @@ my $form = Form::Functional->new(
 
 ok $form, 'Have form';
 can_ok $form, 'process';
+
+is $form->find_field_by_name('a_field'), $field, 'find field';
 
 {
     my $res = $form->process({});

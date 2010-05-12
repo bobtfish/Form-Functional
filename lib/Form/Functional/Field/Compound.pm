@@ -3,6 +3,7 @@ package Form::Functional::Field::Compound;
 
 use MooseX::Role::Parameterized;
 use Form::Functional::Types qw(Field Fields);
+use MooseX::Types::Moose qw(HashRef);
 use MooseX::Types::LoadableClass 0.002 qw(LoadableClass);
 use namespace::autoclean;
 
@@ -24,6 +25,18 @@ role {
         %{ $p->fields_options },
     );
 
+    has fields_by_name => (
+        traits   => [qw(Hash)],
+        isa      => HashRef,
+        init_arg => undef,
+        lazy     => 1,
+        builder  => '_build_fields_by_name',
+        handles  => {
+            find_field_by_name  => 'get',
+            find_fields_by_name => 'get',
+        },
+    );
+
     has processed_class => (
         is      => 'ro',
         isa     => LoadableClass,
@@ -43,6 +56,11 @@ role {
             });
         } @values;
         return @ret ? \@ret : undef;
+    };
+
+    method _build_fields_by_name => sub {
+        my ($self) = @_;
+        return { $self->fields };
     };
 };
 
