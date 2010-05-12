@@ -33,18 +33,13 @@ role {
         },
     );
 
-    method process => sub {
-        my ($self, $values) = @_;
-        return $self->_new_processed({
-            field        => $self,
-            input_values => $values,
-        });
-    };
-
     method validate => sub {
         my ($self, @values) = @_;
         my @ret = map {
-            $self->process($_)
+            $self->_new_processed({
+                field        => $self,
+                input_values => $_,
+            });
         } @values;
         return @ret ? \@ret : undef;
     };

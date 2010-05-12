@@ -13,6 +13,11 @@ with 'Form::Functional::Field::Compound' => {
     },
 };
 
+# convenience wrapper, i guess
+method process ($values) {
+    $self->validate($values)->[0];
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
