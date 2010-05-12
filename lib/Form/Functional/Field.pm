@@ -7,6 +7,7 @@ use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 use Form::Functional::Types qw(ConstraintList FieldCoercion IntersectionTypeConstraint RequiredMessage);
 use aliased 'Moose::Meta::TypeCoercion';
 use aliased 'MooseX::Meta::TypeConstraint::Intersection';
+use MooseX::Traits 0.09;
 use namespace::autoclean;
 
 with 'MooseX::Traits';
