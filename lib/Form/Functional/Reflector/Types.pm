@@ -6,6 +6,7 @@ use MooseX::Types -declare => [qw(
     TypeMapEntry
     FieldBuilder
     FieldBuilderEntry
+    Attribute
 )];
 use namespace::clean -except => [qw/ meta /];
 
@@ -14,6 +15,8 @@ class_type TypeMapEntry, { class => 'Form::Functional::Reflector::TypeMap::Entry
 
 class_type FieldBuilder,      { class => 'Form::Functional::Reflector::FieldBuilder'        };
 role_type  FieldBuilderEntry, { role  => 'Form::Functional::Reflector::FieldBuilder::Entry' };
+
+class_type Attribute, { class => 'Moose::Meta::Attribute' };
 
 __PACKAGE__->meta->make_immutable;
 1;
