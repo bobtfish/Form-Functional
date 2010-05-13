@@ -5,7 +5,8 @@ use Test::More;
 use List::AllUtils qw/natatime/;
 use Devel::Dwarn;
 
-use MooseX::Types::Moose qw/Str/;
+use MooseX::Types::Moose qw/Str Any/;
+use MooseX::Types::Structured qw/ Dict /;
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Default' => 'FieldBuilder';
 use aliased 'Form::Functional::Reflector::FieldBuilder::Result';
@@ -13,6 +14,13 @@ use aliased 'Form::Functional::Reflector::FieldBuilder::Result';
 my @tests = (
     Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 1, isa => Str) )
         => { name => 'foo', required => 1, type_constraints => [ Str ] },
+    Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 0, isa => Str) )
+        => { name => 'foo', required => 0, type_constraints => [ Str ] },
+    Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 0) )
+        => { name => 'foo', required => 0, type_constraints => [ Any ] },
+    Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 1, isa => Str, default => "Hi") )
+        => { name => 'foo', required => 0, type_constraints => [ Str ] },
+    
 );
 
 my $fb = FieldBuilder->new;

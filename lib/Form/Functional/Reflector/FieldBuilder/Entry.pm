@@ -22,6 +22,7 @@ around apply => sub {
     return $new_result;
 };
 
+# FIXME - Mutability, stab, kill destroy.
 has next_link => (
     isa => FieldBuilderEntry,
     is => 'ro',
