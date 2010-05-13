@@ -5,10 +5,12 @@ use Template::Declare;
 use MooseX::Types::LoadableClass qw/ ClassName /;
 use namespace::autoclean;
 
-method render ($form_or_processed, $data) {
-    $data ||= {};
+method render ($form, $data) {
     Template::Declare->init( dispatch_to => [ $self->template_class ] );
-    Template::Declare->show( 'form', $form_or_processed, $data );
+    my $values = $form->isa('Form::Functional::Processed')
+        ? { $form->values }
+        : {}; # init values
+    return Template::Declare->show(form => $form, $values);
 }
 
 has template_class => (

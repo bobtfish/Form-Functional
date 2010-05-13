@@ -11,7 +11,9 @@ use aliased 'Form::Functional::Field';
 use aliased 'Form::Functional::Renderer::TD' => 'Renderer';
 
 my $form = Form::Functional->new(
-    fields => [
+    required         => 1,
+    type_constraints => [],
+    fields           => [
         int_field => Field->new(
             coerce => 0,
             required => 1,
@@ -35,7 +37,7 @@ does_ok $renderer, 'Form::Functional::Renderer';
 }
 
 # Generate some errors
-my $processed = $form->process( { int_field => 'foo' });
+my $processed = $form->process({ values => { int_field => 'foo' } });
 
 {
     my $out = $renderer->render($processed);
