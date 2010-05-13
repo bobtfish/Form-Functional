@@ -17,15 +17,6 @@ has field => (
     },
 );
 
-has init_values => (
-    traits    => [qw(Hash)],
-    isa       => HashRef,
-    predicate => 'has_init_values',
-    handles   => {
-        init_values => 'elements',
-    },
-);
-
 has input_values => (
     traits   => [qw(Hash)],
     isa      => InputValues,

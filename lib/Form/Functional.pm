@@ -18,7 +18,6 @@ with 'Form::Functional::Field::Compound' => {
 method process ($values) {
     defined $_ && confess $_ for (Dict[
         values      => HashRef,
-        init_values => Optional[HashRef],
     ])->validate($values);
     $self->validate($values)->[0];
 }

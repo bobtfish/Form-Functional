@@ -53,9 +53,6 @@ role {
             $self->_new_processed({
                 field        => $self,
                 input_values => $_,
-                (exists $args->{init_values}
-                     ? (init_values => $args->{init_values})
-                     : ()),
             });
         } @{ ref $args->{values} eq 'ARRAY' # FIXME - coercion
                  ?  $args->{values}
