@@ -1,5 +1,6 @@
 package Form::Functional::Reflector::FieldBuilder::Entry;
 use Moose::Role;
+use Method::Signatures::Simple;
 use Form::Functional::Reflector::Types qw/FieldBuilderEntry/;
 use namespace::autoclean;
 
@@ -22,11 +23,9 @@ around apply => sub {
     return $new_result;
 };
 
-# FIXME - Mutability, stab, kill destroy.
 has next_link => (
-    isa => FieldBuilderEntry,
     is => 'ro',
-    writer => 'chain',
+    isa => FieldBuilderEntry,
     default => sub { MatchNever->new },
     handles => {
         apply_to_next_link => 'apply',
@@ -34,10 +33,8 @@ has next_link => (
     }
 );
 
-around chain => sub {
-    my ($orig, $self, @vals) = @_;
-    $self->$orig(@vals);
-    return $self;
-};
+method chain ($class: $attrs, $entry) {
+    $class->new({ %{ $attrs }, next_link => $entry });
+}
 
 1;

@@ -116,20 +116,19 @@ my $test_attr = FieldBuilder->meta->find_attribute_by_name('entries');
 
 {
     my $fb = FieldBuilder->new(entries => [
-        Entry->new(
+        Entry->chain({
             match => sub { 1 },
             apply => sub {
                 my ($self, $result, $item) = @_;
                 $result->clone_and_set( foo => 'bar' )->clone_and_set( 'bar' => 'baz');
             },
-        )->chain(
-            Entry->new(
+        }, Entry->new({
                 match => sub { 1 },
                 apply => sub {
                     my ($self, $result, $item) = @_;
                     $result->clone_and_delete('foo');
                 },
-            )
+            })
         ),
     ]);
     is_deeply {$fb->resolve($test_attr)->data}, { bar => 'baz' },
@@ -138,17 +137,18 @@ my $test_attr = FieldBuilder->meta->find_attribute_by_name('entries');
 
 {
     my $fb = FieldBuilder->new(entries => [
-        Entry->new(
-            match => sub { 1 },
-            apply => sub {
-                my ($self, $result, $item) = @_;
-                $result->clone_and_set( foo => 'bar' );
+        Entry->chain(
+            {
+                match => sub { 1 },
+                apply => sub {
+                    my ($self, $result, $item) = @_;
+                    $result->clone_and_set( foo => 'bar' );
+                },
             },
-        )->chain(
             Entry->new(
                 match => sub { 1 },
                 apply => sub {},
-            )
+            ),
         ),
         Entry->new(
             match => sub { 1 },
@@ -163,21 +163,20 @@ my $test_attr = FieldBuilder->meta->find_attribute_by_name('entries');
     my $called = 0;
     foreach my $exp (0..1) {
         my $fb = FieldBuilder->new(entry =>
-            Entry->new(
-                match => sub { 1 },
-                apply => sub {
-                    my ($self, $result, $item) = @_;
-                    $result;
-                },
-            )->chain(
-                Entry->new(
+            Entry->chain({
+                    match => sub { 1 },
+                    apply => sub {
+                        my ($self, $result, $item) = @_;
+                        $result;
+                    },
+                }, Entry->new({
                     match => sub { $exp },
                     apply => sub {
                         my ($self, $result, $item) = @_;
                         $called++;
                         $result;
                     },
-                )
+                }),
             ),
         );
         is_deeply {$fb->resolve($test_attr)->data}, {};
