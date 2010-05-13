@@ -30,7 +30,9 @@ my $test_attr = FieldBuilder->meta->find_attribute_by_name('entries');
                 apply => $apply,
             ),
         ]);
-        is_deeply {$fb->resolve($test_attr)->data}, {}, 'No values in field hash for ' . $exp;
+        my $result = $fb->resolve($test_attr);
+        isa_ok $result, 'Form::Functional::Reflector::FieldBuilder::Result';
+        is_deeply {$result->data}, {}, 'No values in field hash for ' . $exp;
         is $apply_called, $exp, 'apply_called is ' . $exp;
     }
 }
