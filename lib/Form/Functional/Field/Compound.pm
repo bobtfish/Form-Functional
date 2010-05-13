@@ -48,13 +48,16 @@ role {
     );
 
     method validate => sub {
-        my ($self, @values) = @_;
+        my ($self, $args) = @_;
         return [map {
             $self->_new_processed({
                 field        => $self,
                 input_values => $_,
             });
-        } @values];
+        } @{ ref $args->{values} eq 'ARRAY' # FIXME - coercion
+                 ?  $args->{values}
+                 : [$args->{values}]
+        }];
     };
 
     method _build_fields_by_name => sub {

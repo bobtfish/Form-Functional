@@ -34,10 +34,10 @@ is $form->find_field_by_name('a_field'), $field, 'find field';
 
 dies_ok(sub { $form->process });
 
-isa_ok $form->process({}), 'Form::Functional::Processed';
+isa_ok $form->process({ values => {} }), 'Form::Functional::Processed';
 
 {
-    my $res = $form->process({});
+    my $res = $form->process({ values => {} });
     is_deeply {$res->values}, { }, 'No values';
 }
 
@@ -45,7 +45,7 @@ isa_ok $form->process({}), 'Form::Functional::Processed';
     my %in_vals = (a_field => 'a_value');
     my %exp_out_vals = map { ($_ => [$in_vals{$_}]) } keys %in_vals;
 
-    my $res = $form->process({%in_vals});
+    my $res = $form->process({ values => \%in_vals });
     ok $res, 'Have result';
     isa_ok $res, 'Form::Functional::Processed';
 
@@ -54,7 +54,7 @@ isa_ok $form->process({}), 'Form::Functional::Processed';
     ok !$res->values_exist_for('another_field'), 'Values do not exist for another_field';
     ok !$res->values_exist_for('this_field_not_in_this_form'), 'Values do not exist for field not in this form';
 
-    $res = $form->process({%in_vals, some => 'other', random => 'crap'});
+    $res = $form->process({ values => { %in_vals, some => 'other', random => 'crap' } });
     is_deeply {$res->values}, \%exp_out_vals, 'Output values ignore unknown fields data';
 }
 

@@ -135,7 +135,8 @@ method _build_required_message_cb {
     };
 }
 
-method validate (@values) {
+method validate ($args) {
+    my @values = @{ $args->{values} };
     my @msgs = map {
         $self->_new_error({
             message                => $_->[0],

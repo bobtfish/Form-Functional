@@ -30,7 +30,7 @@ my $form = Form::Functional->new(
     type_constraints => [],
 );
 
-my $res = $form->process({a_field => 'foobar'});
+my $res = $form->process({ values => { a_field => 'foobar' } });
 can_ok $res, 'values';
 is_deeply {$res->values}, {a_field => ['FOOBAR']},
     'Data coerced as expected';
@@ -49,7 +49,7 @@ foreach my $coercion_from (UCOnly, UCOnly->coercion, UCOnly->coercion->_compiled
         type_constraints => [],
     );
 
-    my $res = $form->process({a_field => 'foobar'});
+    my $res = $form->process({ values => { a_field => 'foobar' } });
     is_deeply {$res->values}, {a_field => ['FOOBAR']},
         'Data coerced as expected';
 }

@@ -26,7 +26,7 @@ ok $form, 'Have form';
 can_ok $form, 'process';
 
 {
-    my $res = $form->process({});
+    my $res = $form->process({ values => {} });
     is_deeply {$res->values}, { }, 'No defined values';
 }
 
@@ -35,7 +35,7 @@ my %in_vals = (
 );
 
 {
-    my $res = $form->process(\%in_vals);
+    my $res = $form->process({ values => \%in_vals });
     ok $res, 'Have result';
     isa_ok $res, 'Form::Functional::Processed';
 
@@ -50,7 +50,7 @@ my %in_vals = (
 );
 
 {
-    my $res = $form->process(\%in_vals);
+    my $res = $form->process({ values => \%in_vals });
     ok $res, 'Have result';
     isa_ok $res, 'Form::Functional::Processed';
 

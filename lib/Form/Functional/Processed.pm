@@ -98,7 +98,9 @@ method _validate_field ($name, $field) {
         return [$field->required_message($name, $self)];
     }
 
-    my $ret = $field->validate($self->values_for($name));
+    my $ret = $field->validate({
+        values => [$self->values_for($name)],
+    });
     return $ret;
 }
 

@@ -27,17 +27,17 @@ my $form = Form::Functional->new({
 isa_ok($form, 'Form::Functional');
 
 {
-    my $res = $form->process({ foo => ['moo'] });
+    my $res = $form->process({ values => { foo => ['moo'] } });
     ok(exists { $res->_results }->{$_}) for qw/foo bar/;
 }
 
 {
-    my $res = $form->process({ foo => ['birne'] });
+    my $res = $form->process({ values => { foo => ['birne'] } });
     ok(!exists { $res->_results }->{foo});
 }
 
 {
-    my $res = $form->process({ foo => ['birne', 'affe'] });
+    my $res = $form->process({ values => { foo => ['birne', 'affe'] } });
     ok(exists { $res->_results }->{foo});
 }
 

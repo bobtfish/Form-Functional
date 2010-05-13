@@ -4,6 +4,7 @@ package Form::Functional;
 use Moose 0.90;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw(HashRef);
+use MooseX::Types::Structured qw(Dict Optional);
 use namespace::autoclean;
 
 extends 'Form::Functional::Field';
@@ -15,7 +16,10 @@ with 'Form::Functional::Field::Compound' => {
 
 # convenience wrapper, i guess
 method process ($values) {
-    defined $_ && confess $_ for HashRef->validate($values);
+    defined $_ && confess $_ for (Dict[
+        values      => HashRef,
+        init_values => Optional[HashRef],
+    ])->validate($values);
     $self->validate($values)->[0];
 }
 

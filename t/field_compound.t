@@ -79,7 +79,9 @@ my $form = Form::Functional->new({
 });
 
 {
-    my $res = $form->process({ date => { year => 1980, month => 4, day => 23 } });
+    my $res = $form->process({
+        values => { date => { year => 1980, month => 4, day => 23 } },
+    });
     my %errors = { $res->_results }->{date}->[0]->_results;
     ok !$res->has_errors;
     is_deeply [$res->fields_with_errors], [];
@@ -87,7 +89,9 @@ my $form = Form::Functional->new({
 }
 
 {
-    my $res = $form->process({ date => { year => 1986, month => 14, day => 13 } });
+    my $res = $form->process({
+        values => { date => { year => 1986, month => 14, day => 13 } },
+    });
     my %errors = $res->_results;
     ok $res->has_errors;
     is_deeply [$res->fields_with_errors], ['date'];
