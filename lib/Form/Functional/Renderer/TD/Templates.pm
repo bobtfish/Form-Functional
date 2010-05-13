@@ -8,37 +8,71 @@ use namespace::clean -except => [qw/ meta /];
 
 use base 'Template::Declare';
 
-template field_without_value => sub {
-    my ($self, $form, $name, $field) = @_;
-    show field_with_value => $form, $name, $field, q{};
-};
-
-template field_with_value => sub {
-    my ($self, $form, $name, $field, $value) = @_;
-    input {
-        attr {
-            type => 'text',
-            name => $name,
+sub make_form (&) {
+    my ($cb) = @_;
+    smart_tag_wrapper {
+        my %params = @_;
+        my @fields = $params{form}->fields;
+        form {
+            attr { %{ $params{attr} || {} } };
+            while (my ($name, $field) = splice @fields, 0, 2) {
+                $cb->($name, $field);
+            }
         };
-        $value;
     };
+}
+
+sub make_input (;&) {
+    my ($cb) = @_;
+    smart_tag_wrapper {
+        my %params = @_;
+        input {
+            attr {
+                type => 'text',
+                name => $params{name},
+            };
+            $cb->() if $cb;
+        };
+    };
+}
+
+template field => sub {
+    my ($self, $form, $name, $field) = @_;
+    with (
+        name  => $name,
+        field => $field,
+    ), make_input;
 };
 
 template form => sub {
-    my ($self, $form, $values) = @_;
-    my @fields = $form->fields;
+    my ($self, $form) = @_;
 
-    form {
-        while (my ($name, $field) = splice(@fields, 0, 2)) {
-            if (exists $values->{$name}) {
-                my $val = $values->{$name};
-                $val = $val->[0] if ref($val) eq 'ARRAY'; # FIXME!
-                show field_with_value => $form, $name, $field, $val;
-            }
-            else {
-                show field_without_value => $form, $name, $field;
-            }
-        }
+    with (
+        form => $form,
+    ), make_form {
+        my ($name, $field) = @_;
+        show field => $form, $name, $field;
+    };
+};
+
+template processed_field => sub {
+    my ($self, $processed, $name, $field) = @_;
+    with (
+        name  => $name,
+        field => $field,
+    ), make_input {
+        ($processed->values_for($name))[0]
+            if $processed->values_exist_for($name);
+    };
+};
+
+template processed => sub {
+    my ($self, $processed) = @_;
+    with (
+        form => $processed,
+    ), make_form {
+        my ($name, $field) = @_;
+        show processed_field => $processed, $name, $field;
     };
 };
 
