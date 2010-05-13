@@ -114,4 +114,75 @@ my $test_attr = FieldBuilder->meta->find_attribute_by_name('entries');
         'resolve with apply deleting previous data';
 }
 
+{
+    my $fb = FieldBuilder->new(entries => [
+        Entry->new(
+            match => sub { 1 },
+            apply => sub {
+                my ($self, $result, $item) = @_;
+                $result->clone_and_set( foo => 'bar' )->clone_and_set( 'bar' => 'baz');
+            },
+        )->chain(
+            Entry->new(
+                match => sub { 1 },
+                apply => sub {
+                    my ($self, $result, $item) = @_;
+                    $result->clone_and_delete('foo');
+                },
+            )
+        ),
+    ]);
+    is_deeply {$fb->resolve($test_attr)->data}, { bar => 'baz' },
+        'resolve with chain works as expected';
+}
+
+{
+    my $fb = FieldBuilder->new(entries => [
+        Entry->new(
+            match => sub { 1 },
+            apply => sub {
+                my ($self, $result, $item) = @_;
+                $result->clone_and_set( foo => 'bar' );
+            },
+        )->chain(
+            Entry->new(
+                match => sub { 1 },
+                apply => sub {},
+            )
+        ),
+        Entry->new(
+            match => sub { 1 },
+            apply => sub {},
+        )
+    ]);
+    is_deeply {$fb->resolve($test_attr)->data}, { foo => 'bar' },
+        'Test apply returning nothing means previous results used';
+}
+
+{
+    my $called = 0;
+    foreach my $exp (0..1) {
+        my $fb = FieldBuilder->new(entry =>
+            Entry->new(
+                match => sub { 1 },
+                apply => sub {
+                    my ($self, $result, $item) = @_;
+                    $result;
+                },
+            )->chain(
+                Entry->new(
+                    match => sub { $exp },
+                    apply => sub {
+                        my ($self, $result, $item) = @_;
+                        $called++;
+                        $result;
+                    },
+                )
+            ),
+        );
+        is_deeply {$fb->resolve($test_attr)->data}, {};
+        is $called, $exp, "Test match stops apply being called for chaines $exp";
+    }
+}
+
 done_testing;

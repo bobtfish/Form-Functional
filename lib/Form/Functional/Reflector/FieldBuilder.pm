@@ -8,6 +8,17 @@ use namespace::autoclean;
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Result';
 
+around BUILDARGS => sub {
+    my ($orig, $self, @args) = @_;
+    my $args = $self->$orig(@args);
+    if (exists $args->{entry}) {
+        confess("entry and entries together not supported!")
+            if exists $args->{entries};
+        $args->{entries} = [ delete $args->{entry} ];
+    }
+    return $args;
+};
+
 has entries => (
     isa     => ArrayRef[FieldBuilderEntry],
     lazy    => 1,
@@ -35,9 +46,12 @@ method resolve ($item) {
     my $result = Result->new;
     foreach my $entry ($self->entries) {
         if ($entry->match($item)) {
-            $result = $entry->apply($result, $item)
+            my $new_result = $entry->apply($result, $item);
+            $result = $new_result if $new_result;
         }
     }
+    # FIXME - Should we check the result is sane here?
+    #         Should we check the result is sane inside the loop?
     return $result;
 }
 
