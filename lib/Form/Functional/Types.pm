@@ -1,21 +1,27 @@
 package Form::Functional::Types;
+# ABSTRACT: Type definitions for Form::Functional
 
+use List::AllUtils qw(natatime);
 use MooseX::Types::Moose qw(Str ArrayRef HashRef CodeRef);
 use MooseX::Types::Structured qw(Map);
 use MooseX::Types -declare => [qw(
-    Form
+    CompoundField
     Field
     Fields
     TypeConstraint
+    TypeCoercion
     IntersectionTypeConstraint
     ConstraintList
     FieldCoercion
     RequiredMessage
     InputValues
+    Error
+    Errors
 )];
 
-role_type Form, { role => 'Form::Functional::Field::Compound' };
+role_type CompoundField, { role => 'Form::Functional::Field::Compound' };
 class_type TypeConstraint, { class => 'Moose::Meta::TypeConstraint' };
+class_type TypeCoercion, { class => 'Moose::Meta::TypeCoercion' };
 class_type IntersectionTypeConstraint, { class => 'MooseX::Meta::TypeConstraint::Intersection' };
 
 class_type Field, { class => 'Form::Functional::Field' };
@@ -26,6 +32,9 @@ coerce ConstraintList, from TypeConstraint, via { [$_] };
 subtype FieldCoercion, as CodeRef;
 coerce FieldCoercion, from TypeConstraint, via {
     $_->coercion->_compiled_type_coercion
+};
+coerce FieldCoercion, from TypeCoercion, via {
+    $_->_compiled_type_coercion
 };
 coerce FieldCoercion, from ArrayRef[TypeConstraint], via {
     my @coercions = map { $_->coercion->_compiled_type_coercion } @{ $_ };
@@ -49,7 +58,18 @@ coerce InputValues, from HashRef, via {
 };
 
 my $map = Map[Str, Field];
-subtype Fields, as ArrayRef, where { $map->check({ @{ $_ } }) };
+subtype Fields, as ArrayRef, where {
+    my @l = @{ $_ };
+    my $it = natatime 2, @l;
+    my %seen;
+    while (my ($k) = $it->()) {
+        return 0 if $seen{$k}++;
+    }
+    $map->check({ @l })
+};
+
+class_type Error, { class => 'Form::Functional::Error' };
+subtype Errors, as HashRef[ArrayRef[Error|Errors]];
 
 __PACKAGE__->meta->make_immutable;
 

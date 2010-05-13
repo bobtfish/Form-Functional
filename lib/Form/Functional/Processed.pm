@@ -1,14 +1,16 @@
 package Form::Functional::Processed;
+# ABSTRACT: Represents the results of a form validation.
 
 use Moose;
 use Method::Signatures::Simple;
-use Form::Functional::Types qw(Form InputValues);
+use List::AllUtils qw(part any);
+use Form::Functional::Types qw(CompoundField InputValues Errors);
 use MooseX::Types::Moose qw(HashRef);
 use namespace::autoclean;
 
-has form => (
+has field => (
     is       => 'ro',
-    isa      => Form,
+    isa      => CompoundField,
     required => 1,
     handles  => {
         fields => 'fields',
@@ -45,19 +47,30 @@ method values_exist_for ($name) {
     @{ $self->_values->{$name} || [] } > 0;
 }
 
-has errors => (
+has results => (
     traits   => [qw(Hash)],
     isa      => HashRef,
     init_arg => undef,
     lazy     => 1,
+    builder  => '_build_results',
+    handles  => {
+        _results => 'elements',
+    },
+);
+
+has errors => (
+    traits   => [qw(Hash)],
+    isa      => Errors,
+    init_arg => undef,
+    lazy     => 1,
     builder  => '_build_errors',
     handles  => {
-        _errors => 'elements',
+        errors => 'elements',
     },
 );
 
 method BUILD {
-    $self->_errors;
+    $self->errors;
 }
 
 method _build_values {
@@ -65,10 +78,15 @@ method _build_values {
     my %fields = $self->fields;
 
     my %values = map {
-        my $k = $_;
-        $fields{$_}->should_coerce
-            ? ($_ => [map { $fields{$k}->type_constraint->coerce($_) } @{ $inputs{ $_ } }])
-            : ($_ => $inputs{ $_ });
+        exists $inputs{$_}
+            ? do {
+                my $k = $_;
+                $fields{$_}->should_coerce
+                    ? ($_ => [map { $fields{$k}->type_constraint->coerce($_) }
+                                 @{ $inputs{ $_ } }])
+                    : ($_ => $inputs{ $_ });
+            }
+            : ()
     } keys %fields;
 
     return \%values;
@@ -80,10 +98,13 @@ method _validate_field ($name, $field) {
         return [$field->required_message($name, $self)];
     }
 
-    $field->validate($self->values_for($name));
+    my $ret = $field->validate({
+        values => [$self->values_for($name)],
+    });
+    return $ret;
 }
 
-method _build_errors {
+method _build_results {
     my %fields = $self->fields;
 
     my %errors = map {
@@ -92,6 +113,30 @@ method _build_errors {
     } keys %fields;
 
     return \%errors;
+}
+
+method _build_errors {
+    my %results = $self->_results;
+    return { map {
+        my @e = map {
+            blessed $_ && $_->isa(__PACKAGE__)
+                ? ($_->has_errors
+                    ? { $_->errors }
+                    : ())
+                : $_
+        } @{ $results{$_} };
+        @e ? ($_ => \@e) : ()
+    } keys %results };
+}
+
+method has_errors {
+    my %errors = $self->errors;
+    !!keys %errors;
+}
+
+method fields_with_errors {
+    my %errors = $self->errors;
+    return keys %errors;
 }
 
 __PACKAGE__->meta->make_immutable;

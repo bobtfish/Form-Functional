@@ -26,8 +26,8 @@ ok $form, 'Have form';
 can_ok $form, 'process';
 
 {
-    my $res = $form->process({});
-    is_deeply {$res->values}, { a_field => undef }, 'No defined values';
+    my $res = $form->process({ values => {} });
+    is_deeply {$res->values}, { }, 'No defined values';
 }
 
 my %in_vals = (
@@ -35,13 +35,13 @@ my %in_vals = (
 );
 
 {
-    my $res = $form->process(\%in_vals);
+    my $res = $form->process({ values => \%in_vals });
     ok $res, 'Have result';
     isa_ok $res, 'Form::Functional::Processed';
 
     my %out_vals = $res->values;
 
-    is scalar($res->_errors), 0, 'No validation failures';
+    is scalar($res->_results), 0, 'No validation failures';
     is_deeply \%out_vals, { map { ($_ => [$in_vals{$_}]) } keys %in_vals }, 'Output values as per input values';
 }
 
@@ -50,20 +50,21 @@ my %in_vals = (
 );
 
 {
-    my $res = $form->process(\%in_vals);
+    my $res = $form->process({ values => \%in_vals });
     ok $res, 'Have result';
     isa_ok $res, 'Form::Functional::Processed';
 
     my %out_vals = $res->values;
 
-    my %results = $res->_errors;
+    ok $res->has_errors;
+    my %results = $res->_results;
     is scalar(keys %results), 1, '1 field failed';
     my $error = delete $results{a_field};
     is scalar(keys %results), 0, 'failed field was the expected field';
     is ref($error), 'ARRAY', 'Error is an array ref';
-    like $error->[0]->[0], qr/Validation failed for 'TestTypes::UCOnly'/, 'Correct message (1/2)';
-    like $error->[0]->[0], qr/with value avalue/, 'Correct message (2/2)';
-    isa_ok $error->[0]->[1], 'Moose::Meta::TypeConstraint';
+    like $error->[0]->message, qr/Validation failed for 'TestTypes::UCOnly'/, 'Correct message (1/2)';
+    like $error->[0]->message, qr/with value avalue/, 'Correct message (2/2)';
+    ok $error->[0]->has_failed_type_constraint;
 
     is_deeply \%out_vals, { map { ($_ => [$in_vals{$_}]) } keys %in_vals }, 'Output values as per input values';
 }

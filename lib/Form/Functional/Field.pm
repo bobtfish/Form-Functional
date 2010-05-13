@@ -1,15 +1,17 @@
 package Form::Functional::Field;
+# ABSTRACT: Represents a field within a form
 
 use Moose;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw(Bool ArrayRef);
+use MooseX::Types::LoadableClass qw(ClassName);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 use Form::Functional::Types qw(ConstraintList FieldCoercion IntersectionTypeConstraint RequiredMessage);
 use aliased 'Moose::Meta::TypeCoercion';
 use aliased 'MooseX::Meta::TypeConstraint::Intersection';
 use namespace::autoclean;
 
-with 'MooseX::Traits';
+with 'MooseX::Traits' => { -version => 0.09 };
 
 has '+_trait_namespace' => (
     default => __PACKAGE__,
@@ -63,8 +65,19 @@ has coercion => (
     is        => 'ro',
     isa       => FieldCoercion,
     lazy      => 1,
+    coerce    => 1,
     builder   => '_build_coercion',
     predicate => 'has_coercion'
+);
+
+has error_class => (
+    is      => 'ro',
+    isa     => ClassName,
+    coerce  => 1,
+    default => 'Form::Functional::Error',
+    handles => {
+        _new_error => 'new',
+    },
 );
 
 around BUILDARGS => sub {
@@ -86,35 +99,55 @@ method _build_type_constraint {
     );
 
     if ($self->should_coerce) {
-        my $coercion = Coercion->new(
+        my $coercion = TypeCoercion->new(
             type_constraint => $tc,
         );
 
-        confess "Coercing a field with more than one type constraint requires an explicit coercion rule"
-            if $self->_count_type_constraints > 0 && !$self->has_coercion;
+        my $converter;
+        if ($self->has_coercion) {
+            $converter = $self->coercion;
+        }
+        else {
+            confess "Coercing a field with more than one type constraint requires an explicit coercion rule"
+                if $self->_count_type_constraints > 1;
 
-        my $converter = $self->has_coercion
-            ? $self->coercion
-            : $self->_first_type_constraint->coercion->_compiled_type_coercion;
+            my $tc = $self->_first_type_constraint;
+            confess "Cannot coerce a field with a type constraint ($tc) which has no coercion defined"
+                unless $tc->has_coercion;
+
+            $converter = $tc->coercion->_compiled_type_coercion;
+        }
 
         $coercion->_compiled_type_coercion($converter);
 
-        $tc->coercion($tc);
+        $tc->coercion($coercion);
     }
 
     return $tc;
 }
 
 method _build_required_message_cb {
-    return sub { ["Field [_1] is required", $_[1]] };
+    return sub {
+        $self->_new_error({
+            message   => "Field [_1] is required",
+            arguments => [$_[1]],
+        });
+    };
 }
 
-method validate (@values) {
-    my $msgs = [map { $_->[0] } grep defined, map {
+method validate ($args) {
+    my @values = @{ $args->{values} };
+    my @msgs = map {
+        $self->_new_error({
+            message                => $_->[0],
+            failed_type_constraint => $_->[1],
+        })
+    } map { @{ $_ } } grep defined, map {
         $self->type_constraint->validate_all($_)
-    } @values];
+    } @values;
 
-    return @{ $msgs } ? $msgs : undef;
+    return unless @msgs;
+    return \@msgs;
 }
 
 __PACKAGE__->meta->make_immutable;
