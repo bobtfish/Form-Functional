@@ -7,10 +7,13 @@ use Method::Signatures::Simple;
 use namespace::autoclean;
 
 has entries => (
-    is      => 'ro',
     isa     => ArrayRef[FieldBuilderEntry],
     lazy    => 1,
     builder => '_build_entries',
+    traits   => [qw(Array)],
+    handles  => {
+        entries => 'elements',
+    },
 );
 
 has item_constraint => (
@@ -27,13 +30,13 @@ method resolve ($item) {
             (defined $item ? $item : 'undef'), $self->item_constraint))
         unless $self->item_constraint->check($item);
 
-    return {
-        map { # FIXME - This bit sucks!
-            $_->match($item)
-                ? $_->apply($item)
-                : ()
-        } @{ $self->entries },
-    };
+    my $field = {};
+    foreach my $entry ($self->entries) {
+        if ($entry->match($item)) {
+            $field = { $entry->apply($field, $item) }
+        }
+    }
+    return $field;
 }
 
 __PACKAGE__->meta->make_immutable;
