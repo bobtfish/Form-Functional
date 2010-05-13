@@ -7,6 +7,10 @@ requires qw(match apply);
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::MatchNever';
 
+# FIXME - This is a massive chunk of fail, as it basically means that you
+#         can't subclass entry classes and override apply, which is clearly
+#         something you want to do. E.g. XXXXFromAttribute should just subclass
+#         MatchAttribute
 around apply => sub {
     my ($orig, $self, $result, $item) = @_;
     my $new_result = $self->$orig($result, $item);
