@@ -18,6 +18,7 @@ use MooseX::Types -declare => [qw(
     Error
     Errors
 )];
+use namespace::clean -except => [qw/ meta /];
 
 role_type CompoundField, { role => 'Form::Functional::Field::Compound' };
 class_type TypeConstraint, { class => 'Moose::Meta::TypeConstraint' };
