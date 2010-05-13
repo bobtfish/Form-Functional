@@ -6,6 +6,8 @@ use Form::Functional::Reflector::Types qw(FieldBuilderEntry Attribute);
 use Method::Signatures::Simple;
 use namespace::autoclean;
 
+use aliased 'Form::Functional::Reflector::FieldBuilder::Result';
+
 has entries => (
     isa     => ArrayRef[FieldBuilderEntry],
     lazy    => 1,
@@ -30,13 +32,13 @@ method resolve ($item) {
             (defined $item ? $item : 'undef'), $self->item_constraint))
         unless $self->item_constraint->check($item);
 
-    my $field = {};
+    my $result = Result->new;
     foreach my $entry ($self->entries) {
         if ($entry->match($item)) {
-            $field = { $entry->apply($field, $item) }
+            $result = $entry->apply($result, $item)
         }
     }
-    return $field;
+    return $result;
 }
 
 __PACKAGE__->meta->make_immutable;
