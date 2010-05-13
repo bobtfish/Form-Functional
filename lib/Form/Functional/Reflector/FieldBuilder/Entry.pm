@@ -5,7 +5,7 @@ use namespace::autoclean;
 
 requires qw(match apply);
 
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::NeverMatch';
+use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::MatchNever';
 
 around apply => sub {
     my ($orig, $self, $result, $item) = @_;
@@ -22,7 +22,7 @@ has next_link => (
     isa => FieldBuilderEntry,
     is => 'ro',
     writer => 'chain',
-    default => sub { NeverMatch->new },
+    default => sub { MatchNever->new },
     handles => {
         apply_to_next_link => 'apply',
         next_link_matches => 'match',

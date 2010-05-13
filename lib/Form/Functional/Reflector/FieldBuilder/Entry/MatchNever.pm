@@ -1,8 +1,8 @@
-package Form::Functional::Reflector::FieldBuilder::Entry::NeverMatch;
+package Form::Functional::Reflector::FieldBuilder::Entry::MatchNever;
 use Moose;
 use namespace::autoclean;
 
-sub match { 0 };
+sub match { 0 }
 
 sub apply { confess("Should never be called") }
 
