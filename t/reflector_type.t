@@ -46,7 +46,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
 
     foreach my $try (@ok) {
         ok $tc->check($try), 'Can check ok with TC';
-        my $result = $form->process($try);
+        my $result = $form->process({ values => $try });
         ok !$result->has_errors, 'No errors';
     }
 
@@ -59,7 +59,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
 
     foreach my $try (@fail) {
         ok !$tc->check($try), 'Cannot check ok with TC';
-        my $result = $form->process($try);
+        my $result = $form->process({ values => $try });
         ok $result->has_errors, 'Has errors';
     }
 }

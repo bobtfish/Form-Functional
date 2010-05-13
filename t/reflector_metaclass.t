@@ -53,7 +53,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
 
     foreach my $try (@ok) {
         lives_ok { TestReflectedClass->new($try) } 'Can construct real class';
-        my $result = $form->process($try);
+        my $result = $form->process({ values => $try });
         ok !$result->has_errors, 'No errors';
     }
 
@@ -65,7 +65,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
 
     foreach my $try (@fail) {
         dies_ok { TestReflectedClass->new($try) } 'Cannot construct real class';
-        my $result = $form->process($try);
+        my $result = $form->process({ values => $try });
         ok $result->has_errors, 'Has errors';
     }
 }
@@ -83,7 +83,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
 
     foreach my $try (@ok) {
         lives_ok { TestReflectedClassCompound->new($try) } 'Can construct real compound class';
-        my $result = $form->process($try);
+        my $result = $form->process({ values => $try });
         ok !$result->has_errors
             or Dwarn [$try, [$result->errors]];
     }
