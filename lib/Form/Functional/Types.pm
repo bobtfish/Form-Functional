@@ -15,6 +15,8 @@ use MooseX::Types -declare => [qw(
     FieldCoercion
     RequiredMessage
     InputValues
+    Error
+    Errors
 )];
 
 role_type CompoundField, { role => 'Form::Functional::Field::Compound' };
@@ -65,6 +67,9 @@ subtype Fields, as ArrayRef, where {
     }
     $map->check({ @l })
 };
+
+class_type Error, { class => 'Form::Functional::Error' };
+subtype Errors, as HashRef[ArrayRef[Error|Errors]];
 
 __PACKAGE__->meta->make_immutable;
 

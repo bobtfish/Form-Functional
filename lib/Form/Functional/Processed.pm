@@ -4,7 +4,7 @@ package Form::Functional::Processed;
 use Moose;
 use Method::Signatures::Simple;
 use List::AllUtils qw(part any);
-use Form::Functional::Types qw(CompoundField InputValues);
+use Form::Functional::Types qw(CompoundField InputValues Errors);
 use MooseX::Types::Moose qw(HashRef);
 use namespace::autoclean;
 
@@ -69,7 +69,7 @@ has results => (
 
 has errors => (
     traits   => [qw(Hash)],
-    isa      => HashRef,
+    isa      => Errors,
     init_arg => undef,
     lazy     => 1,
     builder  => '_build_errors',
@@ -126,7 +126,7 @@ method _build_results {
 
 method _build_errors {
     my %results = $self->_results;
-    my %errors = map {
+    return { map {
         my @e = map {
             blessed $_ && $_->isa(__PACKAGE__)
                 ? ($_->has_errors
@@ -135,9 +135,7 @@ method _build_errors {
                 : $_
         } @{ $results{$_} };
         @e ? ($_ => \@e) : ()
-    } keys %results;
-
-    return \%errors;
+    } keys %results };
 }
 
 method has_errors {
