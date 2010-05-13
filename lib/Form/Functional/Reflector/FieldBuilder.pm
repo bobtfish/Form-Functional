@@ -8,6 +8,11 @@ use namespace::autoclean;
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Result';
 
+# FIXME - I think we should probably have the same sort of deal here as we have
+#         with compound fields in the main F::F and F::F::F::Compound, as really
+#         the field builder is just a specialised case of a FieldBuild::Entry
+#         with additional behaviour. Make it so!
+
 around BUILDARGS => sub {
     my ($orig, $self, @args) = @_;
     my $args = $self->$orig(@args);
