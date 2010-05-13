@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::Exception;
 use MooseX::Types::Moose qw/Str/;
 use Form::Functional;
 
@@ -31,7 +32,9 @@ can_ok $form, 'process';
 
 is $form->find_field_by_name('a_field'), $field, 'find field';
 
-isa_ok $form->process, 'Form::Functional::Processed';
+dies_ok(sub { $form->process });
+
+isa_ok $form->process({}), 'Form::Functional::Processed';
 
 {
     my $res = $form->process({});

@@ -82,7 +82,8 @@ method _build_values {
             ? do {
                 my $k = $_;
                 $fields{$_}->should_coerce
-                    ? ($_ => [map { $fields{$k}->type_constraint->coerce($_) } @{ $inputs{ $_ } }])
+                    ? ($_ => [map { $fields{$k}->type_constraint->coerce($_) }
+                                 @{ $inputs{ $_ } }])
                     : ($_ => $inputs{ $_ });
             }
             : ()

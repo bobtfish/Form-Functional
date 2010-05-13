@@ -49,14 +49,12 @@ role {
 
     method validate => sub {
         my ($self, @values) = @_;
-        $values[0] ||= {}; # FIXME - Do not explode if undef passed in
-        my @ret = map {
+        return [map {
             $self->_new_processed({
                 field        => $self,
                 input_values => $_,
             });
-        } @values;
-        return \@ret;
+        } @values];
     };
 
     method _build_fields_by_name => sub {
