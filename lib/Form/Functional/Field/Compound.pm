@@ -4,6 +4,7 @@ package Form::Functional::Field::Compound;
 use MooseX::Role::Parameterized;
 use Form::Functional::Types qw(Field Fields);
 use MooseX::Types::Moose qw(HashRef);
+use MooseX::Types::Structured qw(Dict);
 use MooseX::Types::LoadableClass 0.002 qw(LoadableClass);
 use namespace::autoclean;
 
@@ -60,10 +61,45 @@ role {
         }];
     };
 
+    # convenience wrapper, i guess
+    method process => sub {
+        my ($self, $values) = @_;
+        defined $_ && confess $_ for (Dict[
+            values      => HashRef,
+        ])->validate($values);
+        $self->validate($values)->[0];
+    };
+
     method _build_fields_by_name => sub {
         my ($self) = @_;
         return { $self->fields };
     };
+
+    method _build__with_init_value_trait => sub {
+        'Form::Functional::Field::WithInitValue::Compound'
+    };
+
+    method clone_with_init_value => sub {
+        my ($self, $value) = @_;
+        defined $_ && confess $_ for HashRef->validate($value);
+
+        my %fields = $self->fields;
+        my %cloned_fields = map {
+            ($_ => (exists $value->{$_}
+                        ? $fields{$_}->clone_with_init_value($value->{$_})
+                        : $fields{$_}->clone)) # necessary? or could they share the ref?
+        } keys %fields;
+
+        my $clone = $self->clone(fields => [%cloned_fields]);
+        $self->_with_init_value_trait->apply(
+            $clone,
+            rebless_params => {
+                init_value => $value,
+            },
+        );
+    };
+
+    with 'Form::Functional::FieldAtom';
 };
 
 1;
