@@ -87,7 +87,7 @@ role {
         my %cloned_fields = map {
             ($_ => (exists $value->{$_}
                         ? $fields{$_}->clone_with_init_value($value->{$_})
-                        : $fields{$_}->clone)) # necessary? or could they share the ref?
+                        : $fields{$_}))
         } keys %fields;
 
         my $clone = $self->clone(fields => [%cloned_fields]);
