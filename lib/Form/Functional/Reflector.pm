@@ -41,8 +41,8 @@ method generate_form_from ($reflectee) {
 
 method build_field ($field) {
     my %data = $self->resolve_field($field)->data;
-    use Devel::Dwarn;
-    Dwarn \%data;
+    #use Devel::Dwarn;
+    #Dwarn \%data;
                                                                                 # FIXME!!!
     return keys(%data) ? (delete $data{name} => FormFieldBuilder->make({%data, as => ['Discrete']})) : ();
 }

@@ -21,8 +21,8 @@ has data => (
 around data => sub {
     my ($orig, $self) = @_;
     my %data = $self->$orig;
-    #use Data::Dumper;
-    #warn Dumper \%data;
+    #use Devel::Dwarn;
+    #Dwarn \%data;
     foreach my $k (keys %data) {
         if (blessed($data{$k})||'' eq __PACKAGE__) {
             $data{$k} = { $data{$k}->data };

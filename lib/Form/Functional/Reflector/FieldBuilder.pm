@@ -44,9 +44,9 @@ has item_constraint => (
 method _build_entries { [] }
 
 method resolve ($item) {
-    use Data::Dumper;
-    local $Data::Dumper::Maxdepth = 2;
-    warn Dumper $item;
+    #use Devel::Dwarn;
+    #local $Data::Dumper::Maxdepth = 2;
+    #Dwarn $item;
     confess(sprintf("Cannot resolve item '%s', is not a %s",
             (defined $item ? $item : 'undef'), $self->item_constraint))
         unless $self->item_constraint->check($item);
