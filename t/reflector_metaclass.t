@@ -84,6 +84,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
     foreach my $try (@ok) {
         lives_ok { TestReflectedClassCompound->new($try) } 'Can construct real compound class';
         my $result = $form->process({ values => $try });
+        local $Data::Dumper::Maxdepth = 4;
         ok !$result->has_errors
             or Dwarn [$try, [$result->errors]];
     }
