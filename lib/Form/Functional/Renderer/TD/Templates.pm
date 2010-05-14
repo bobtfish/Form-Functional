@@ -30,8 +30,8 @@ sub make_input (;&) {
             attr {
                 type => 'text',
                 name => $params{name},
+                $cb ? (value => $cb->()) : (),
             };
-            $cb->() if $cb;
         };
     };
 }
