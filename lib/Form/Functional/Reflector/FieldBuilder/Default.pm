@@ -13,9 +13,9 @@ use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::TypeConstraintFro
 use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::MatchTypeConstraint';
 
 method _build_entries { [
-    MatchAttribute->new->chain(
-        NameFromAttribute->new->chain(
-            RequiredFromAttribute->new->chain(
+    MatchAttribute->chain({},
+        NameFromAttribute->chain({},
+            RequiredFromAttribute->chain({},
                 TypeConstraintFromAttribute->new
     ))),
     MatchTypeConstraint->new,

@@ -7,7 +7,7 @@ use aliased 'Form::Functional::Field';
 use Data::OptList qw/mkopt/;
 use namespace::autoclean;
 
-method generate_form_from ($type_or_name) {
+method old_generate_form_from ($type_or_name) {
     my $tc = blessed($type_or_name) ? $type_or_name : find_type_constraint($type_or_name);
     confess "Could not find type constraint named '$type_or_name', is is defined?"
         unless $tc;
@@ -16,13 +16,10 @@ method generate_form_from ($type_or_name) {
     confess "$tc is not a Dict"
         unless $tc->is_a_type_of(Dict);
 
-    # FIXME - Fugly! Deal with slurpy by setting the value to undef..
-    my @constraints = @{ $tc->type_constraints };
-    push(@constraints, undef) if scalar(@constraints) % 2;
-    my %constraints = @constraints;
+
 
     my @fields;
-
+    my %constraints;
     foreach my $name (keys %constraints) {
         my $sub_tc = $constraints{$name};
         next unless $sub_tc; # Actually skips slurpy..
@@ -43,6 +40,25 @@ method generate_form_from ($type_or_name) {
     }
 
     $self->_build_form_from_fields(@fields);
+}
+
+method get_fields_from_reflectee ($tc) {
+    # FIXME - Fugly! Deal with slurpy by setting the value to undef..
+    my @constraints = @{ $tc->type_constraints };
+    push(@constraints, undef) if scalar(@constraints) % 2;
+    my %constraints = @constraints;
+    return map { [ $_ => $constraints{$_} ] } keys %constraints;
+}
+
+method validate_reflectee ($type_or_name){
+    my $tc = blessed($type_or_name) ? $type_or_name : find_type_constraint($type_or_name);
+    confess "Could not find type constraint named '$type_or_name', is is defined?"
+        unless $tc;
+    confess "$tc is not a Moose::Meta::TypeConstraint"
+        unless $tc->isa('Moose::Meta::TypeConstraint');
+    confess "$tc is not a Dict"
+        unless $tc->is_a_type_of(Dict);
+    return $tc;
 }
 
 with 'Form::Functional::Reflector';
