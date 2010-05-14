@@ -46,6 +46,10 @@ method clone_and_set ($key, $value) {
         croak "Cannot merge data in $key with pre-existing data without a merge direction - try clone_and_merge_r or clone_and_merge_l"
             if (ref($self->get($key)) eq 'HASH');
     }
+    if ($self->get($key) && ref($self->get($key)) ne ref($value)) {
+        croak sprintf("Cannot set key '%s' to type %s - it already holds a %s",
+            $key, ref($value)||'SCALAR', ref($self->get($key))||'SCALAR');
+    }
     $self->clone(data => { $self->data, $key => $value });
 }
 

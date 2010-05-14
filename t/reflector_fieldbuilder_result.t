@@ -38,4 +38,10 @@ is_deeply {$r7->data}, { foo => 'bar', baz => { some => 'data', other => 'change
 my $r8 = Result->new->clone_and_merge_r( foo => { some => 'data'} );
 is_deeply {$r8->data}, { foo => { some => 'data' }};
 
+throws_ok { $r8->clone_and_set(foo => []) }
+    qr/annot set key 'foo' to type ARRAY - it already holds a HASH/;
+
+throws_ok { $r8->clone_and_set(foo => 'bar') }
+    qr/annot set key 'foo' to type SCALAR - it already holds a HASH/;
+
 done_testing;
