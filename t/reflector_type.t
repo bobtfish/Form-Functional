@@ -47,7 +47,10 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
     foreach my $try (@ok) {
         ok $tc->check($try), 'Can check ok with TC';
         my $result = $form->process({ values => $try });
-        ok !$result->has_errors, 'No errors';
+        use Devel::Dwarn;
+        local $Data::Dumper::Maxdepth = 4;
+        ok !$result->has_errors, 'No errors'
+            or Dwarn $result;
     }
 
     my @fail = (
@@ -60,7 +63,10 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
     foreach my $try (@fail) {
         ok !$tc->check($try), 'Cannot check ok with TC';
         my $result = $form->process({ values => $try });
-        ok $result->has_errors, 'Has errors';
+        use Devel::Dwarn;
+        local $Data::Dumper::Maxdepth = 5;
+        ok $result->has_errors, 'Has errors'
+            or Dwarn [$try, $result];
     }
 }
 

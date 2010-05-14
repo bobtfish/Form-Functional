@@ -11,14 +11,21 @@ use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::NameFromAttribute
 use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::TypeConstraintFromAttribute';
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::MatchTypeConstraint';
+use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::RequiredFromConstraint';
+use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::NameFromConstraint';
+use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::TypeConstraintFromConstraint';
 
 method _build_entries { [
-    MatchAttribute->chain({},
-        NameFromAttribute->chain({},
-            RequiredFromAttribute->chain({},
+    MatchAttribute->chain( {},
+        NameFromAttribute->chain( {},
+            RequiredFromAttribute->chain( {},
                 TypeConstraintFromAttribute->new
     ))),
-    MatchTypeConstraint->new,
+    MatchTypeConstraint->chain( {},
+        NameFromConstraint->chain( {},
+            RequiredFromConstraint->chain( {},
+                TypeConstraintFromConstraint->new
+    ))),
 ] }
 
 __PACKAGE__->meta->make_immutable;

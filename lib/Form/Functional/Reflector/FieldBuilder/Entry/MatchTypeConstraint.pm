@@ -1,11 +1,11 @@
 package Form::Functional::Reflector::FieldBuilder::Entry::MatchTypeConstraint;
 use Moose;
 use Method::Signatures::Simple;
-use Form::Functional::Types qw/ TypeConstraint /;
+use Form::Functional::Reflector::Types qw/ NameAndConstraintPair /;
 use namespace::autoclean;
 
 method match ($item) {
-    is_TypeConstraint($item);
+    is_NameAndConstraintPair($item);
 }
 
 with 'Form::Functional::Reflector::FieldBuilder::Entry::Role::MatchOnly';
