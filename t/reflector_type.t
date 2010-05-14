@@ -45,6 +45,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
     );
 
     foreach my $try (@ok) {
+        # FIXME - should also test that we have the expected data (and that random crap is removed)
         ok $tc->check($try), 'Can check ok with TC';
         my $result = $form->process({ values => $try });
         use Devel::Dwarn;

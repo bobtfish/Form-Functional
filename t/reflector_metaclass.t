@@ -52,6 +52,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
     );
 
     foreach my $try (@ok) {
+        # FIXME - should also test that we have the expected data (and that random crap is removed)
         lives_ok { TestReflectedClass->new($try) } 'Can construct real class';
         my $result = $form->process({ values => $try });
         ok !$result->has_errors, 'No errors';
@@ -82,6 +83,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
     );
 
     foreach my $try (@ok) {
+        # FIXME - should also test that we have the expected data (and that random crap is removed)
         lives_ok { TestReflectedClassCompound->new($try) } 'Can construct real compound class';
         my $result = $form->process({ values => $try });
         local $Data::Dumper::Maxdepth = 4;
