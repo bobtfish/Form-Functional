@@ -7,7 +7,7 @@ method match { 1 }
 
 method apply ($result, $item) {
     my $required = ($item->has_builder || $item->has_default || !$item->is_required) ? 0 : 1;
-    $result->clone_and_set(required => $required);
+    $result->clone_and_merge_r(with => {required => $required});
 }
 
 with 'Form::Functional::Reflector::FieldBuilder::Entry';

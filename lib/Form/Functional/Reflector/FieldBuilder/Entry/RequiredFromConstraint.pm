@@ -13,7 +13,7 @@ method apply ($result, $item) {
                       #         we should entirely treat the input data structure as immutable!!!
         $item->[1] = $tc->type_parameter;
     }
-    $result->clone_and_set(required => $required);
+    $result->clone_and_merge_r(with => {required => $required});
 }
 
 with 'Form::Functional::Reflector::FieldBuilder::Entry';

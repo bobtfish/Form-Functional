@@ -61,7 +61,7 @@ method clone_and_delete ($key) {
 
 method _clone_and_merge ($merger, $key, $val) {
     my $current = $self->get($key);
-    $current ||= {};
+    $current ||= {}; # FIXME - Undef is a valid value, should test exists!
     my $type = ref($current) || 'SCALAR';
     croak "Cannot merge hash with non hash ($type) for key $key"
         unless $type eq 'HASH';
