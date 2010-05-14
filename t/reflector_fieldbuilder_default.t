@@ -13,14 +13,13 @@ use aliased 'Form::Functional::Reflector::FieldBuilder::Result';
 
 my @tests = (
     Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 1, isa => Str) )
-        => { name => 'foo', required => 1, type_constraints => [ Str ] },
+        => { name => 'foo', with => { required => 1, type_constraints => [ Str ] } },
     Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 0, isa => Str) )
-        => { name => 'foo', required => 0, type_constraints => [ Str ] },
+        => { name => 'foo', with => { required => 0, type_constraints => [ Str ] } },
     Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 0) )
-        => { name => 'foo', required => 0, type_constraints => [ Any ] },
+        => { name => 'foo', with => { required => 0, type_constraints => [ Any ] } },
     Moose::Meta::Attribute->new( foo => ( is => 'ro', required => 1, isa => Str, default => "Hi") )
-        => { name => 'foo', required => 0, type_constraints => [ Str ] },
-    
+        => { name => 'foo', with => { required => 0, type_constraints => [ Str ] } },
 );
 
 my $fb = FieldBuilder->new;
