@@ -4,6 +4,7 @@ package Form::Functional::Field::Compound;
 use MooseX::Role::Parameterized;
 use Form::Functional::Types qw(Field Fields);
 use MooseX::Types::Moose qw(HashRef);
+use MooseX::Types::Structured qw(Dict);
 use MooseX::Types::LoadableClass 0.002 qw(LoadableClass);
 use namespace::autoclean;
 
@@ -58,6 +59,15 @@ role {
                  ?  $args->{values}
                  : [$args->{values}]
         }];
+    };
+
+    # convenience wrapper, i guess
+    method process => sub {
+        my ($self, $values) = @_;
+        defined $_ && confess $_ for (Dict[
+            values      => HashRef,
+        ])->validate($values);
+        $self->validate($values)->[0];
     };
 
     method _build_fields_by_name => sub {
