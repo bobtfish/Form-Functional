@@ -6,7 +6,7 @@ use Form::Functional::Reflector::Types qw/ FieldBuilder TypeMap /;
 use namespace::autoclean;
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Default' => 'DefaultFieldBuilder';
-use aliased 'Form::Functional::Field';
+use aliased 'Form::Functional::FieldBuilder';
 
 requires qw/
     validate_reflectee
@@ -17,7 +17,7 @@ has form_class => (
     isa => ClassName,
     is => 'ro',
     coerce => 1,
-    default => 'Form::Functional',
+    default => 'Form::Functional::Form',
 );
 
 has field_builder => (
@@ -41,7 +41,7 @@ method generate_form_from ($reflectee) {
 
 method build_field ($field) {
     my %data = $self->resolve_field($field)->data;
-    return keys(%data) ? (delete $data{name} => Field->new(%data)) : ();
+    return keys(%data) ? (delete $data{name} => FieldBuilder->with(%data)) : ();
 }
 
 method build_form_from_fields (@fields) {
