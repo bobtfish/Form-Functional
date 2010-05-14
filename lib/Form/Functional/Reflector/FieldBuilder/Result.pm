@@ -4,6 +4,8 @@ use Method::Signatures::Simple;
 use MooseX::Types::Moose qw/ HashRef /;
 use namespace::autoclean;
 
+with 'MooseX::Clone';
+
 has data => (
     isa => HashRef,
     default => sub { {} },
@@ -15,13 +17,13 @@ has data => (
 );
 
 method clone_and_set ($key, $value) {
-    blessed($self)->new(data => { $self->data, $key => $value });
+    $self->clone(data => { $self->data, $key => $value });
 }
 
 method clone_and_delete ($key) {
     my %data = $self->data;
     delete $data{$key};
-    blessed($self)->new(data => \%data);
+    $self->clone(data => \%data);
 }
 
 __PACKAGE__->meta->make_immutable;
