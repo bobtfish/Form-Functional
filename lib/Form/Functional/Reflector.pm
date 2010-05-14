@@ -20,7 +20,7 @@ has form_class => (
     default => 'Form::Functional',
 );
 
-has field_builder_class => (
+has field_builder => (
     isa => FieldBuilder,
     is => 'ro',
     required => 1,

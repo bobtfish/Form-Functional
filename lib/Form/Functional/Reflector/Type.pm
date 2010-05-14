@@ -2,10 +2,13 @@ package Form::Functional::Reflector::Type;
 use Moose;
 use Method::Signatures::Simple;
 use Moose::Util::TypeConstraints;
-use MooseX::Types::Structured qw/ Dict Optional /;
-use aliased 'Form::Functional::Field';
-use Data::OptList qw/mkopt/;
+use MooseX::Types::Structured qw/ Dict Optional /; # FIXME - remove
+use aliased 'Form::Functional::Field'; # FIXME - remove
+use Form::Functional::Types qw/ TypeConstraint /;
+use Form::Functional::Reflector::Types qw/ NameAndConstraintPair /;
 use namespace::autoclean;
+
+use aliased 'Form::Functional::Reflector::FieldBuilder::Default' => 'DefaultFieldBuilder';
 
 method old_generate_form_from ($type_or_name) {
     my $tc = blessed($type_or_name) ? $type_or_name : find_type_constraint($type_or_name);
@@ -42,10 +45,10 @@ method old_generate_form_from ($type_or_name) {
     $self->_build_form_from_fields(@fields);
 }
 
+
 method get_fields_from_reflectee ($tc) {
-    # FIXME - Fugly! Deal with slurpy by setting the value to undef..
     my @constraints = @{ $tc->type_constraints };
-    push(@constraints, undef) if scalar(@constraints) % 2;
+    pop @constraints if scalar(@constraints) % 2; # FIXME - Fugly! Deal with slurpy by popping it off the end
     my %constraints = @constraints;
     return map { [ $_ => $constraints{$_} ] } keys %constraints;
 }
@@ -62,5 +65,11 @@ method validate_reflectee ($type_or_name){
 }
 
 with 'Form::Functional::Reflector';
+
+has '+field_builder' => (
+    default => sub { DefaultFieldBuilder->new(
+        item_constraint => NameAndConstraintPair,
+    ) },
+);
 
 __PACKAGE__->meta->make_immutable;
