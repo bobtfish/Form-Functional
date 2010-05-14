@@ -5,25 +5,31 @@ use Test::More;
 use Test::Moose;
 
 use MooseX::Types::Moose qw/ Int Str /;
-use Form::Functional;
+use Form::Functional::Form;
 
-use aliased 'Form::Functional::Field';
+use aliased 'Form::Functional::FieldBuilder';
 use aliased 'Form::Functional::Renderer::TD' => 'Renderer';
 
-my $form = Form::Functional->new(
+my $form = Form::Functional::Form->new(
     required         => 1,
     type_constraints => [],
     fields           => [
-        int_field => Field->new(
-            coerce => 0,
-            required => 1,
-            type_constraints => [ Int ],
-        ),
-        str_field => Field->new(
-            coerce => 0,
-            required => 1,
-            type_constraints => [ Str ],
-        ),
+        int_field => FieldBuilder->make({
+            as => ['Discrete'],
+            with => {
+                coerce           => 0,
+                required         => 1,
+                type_constraints => [ Int ],
+            },
+        }),
+        str_field => FieldBuilder->make({
+            as => ['Discrete'],
+            with => {
+                coerce           => 0,
+                required         => 1,
+                type_constraints => [ Str ],
+            },
+        }),
     ],
 );
 my $renderer = Renderer->new;
