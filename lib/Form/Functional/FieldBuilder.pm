@@ -7,6 +7,7 @@ use Method::Signatures::Simple;
 use MooseX::Types::Structured qw(Dict);
 use MooseX::Types::Moose qw(HashRef ArrayRef Str);
 use MooseX::Types::LoadableClass qw(LoadableClass LoadableRole);
+use String::RewritePrefix;
 use namespace::autoclean;
 
 has field_class_prefix => (
@@ -38,16 +39,20 @@ method make ($class_or_self: $args) {
         ? $class_or_self
         : $class_or_self->new;
 
-    my @roles = @{ $args->{as} };
+    my @roles = String::RewritePrefix->rewrite(
+            { '' => $self->field_role_prefix . q{::}, '+' => '' },
+            @{ $args->{as} }
+    );
     my $name = join q{::} => $self->field_class_prefix, join q{_} => sort @roles;
+
     my $meta = Class::MOP::is_class_loaded($name)
         ? find_meta($name)
         : Moose::Meta::Class->create(
         $name,
         superclasses => [$self->field_base_class],
-        roles        => [map {
-            to_LoadableRole(join q{::} => $self->field_role_prefix, $_)
-        } @roles],
+        roles        => [
+            map { to_LoadableRole( $_ ) } @roles
+        ],
     );
 
     return $meta->name->new($args->{with});
