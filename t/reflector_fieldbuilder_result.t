@@ -35,4 +35,7 @@ is_deeply {$r6->data}, { foo => 'bar', baz => { some => 'data', other => 'data'}
 my $r7 = $r6->clone_and_merge_r( baz => { other => 'changed' } );
 is_deeply {$r7->data}, { foo => 'bar', baz => { some => 'data', other => 'changed'} };
 
+my $r8 = Result->new->clone_and_merge_r( foo => { some => 'data'} );
+is_deeply {$r8->data}, { foo => { some => 'data' }};
+
 done_testing;
