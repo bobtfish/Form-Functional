@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Form::Functional;
+use Form::Functional::Form;
 use aliased 'Form::Functional::FieldBuilder';
 
 {
@@ -75,7 +75,7 @@ use aliased 'Form::Functional::FieldBuilder';
     }
 }
 
-my $form = Form::Functional->new({
+my $form = Form::Functional::Form->new({
     required         => 1,
     type_constraints => [],
     fields           => [

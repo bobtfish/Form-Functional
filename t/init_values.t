@@ -2,10 +2,10 @@ use strict;
 use warnings;
 use Test::More;
 
-use Form::Functional;
+use Form::Functional::Form;
 use Form::Functional::FieldBuilder;
 
-my $form = Form::Functional->new({
+my $form = Form::Functional::Form->new({
     type_constraints => [],
     required         => 1,
     fields           => [

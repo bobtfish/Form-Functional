@@ -7,7 +7,7 @@ use Test::More;
 use Test::Exception;
 
 use TestTypes qw/ UCOnly UCOnlyTwo UCOnlyNoCoercion /;
-use Form::Functional;
+use Form::Functional::Form;
 
 use aliased 'Form::Functional::FieldBuilder';
 
@@ -44,7 +44,7 @@ throws_ok {
     })
 } qr/more than one type constraint/, 'More than one TC without explicit coercion message';
 
-my $form = Form::Functional->new(
+my $form = Form::Functional::Form->new(
     fields => [
         a_field => FieldBuilder->make({
             as => ['Discrete'],
@@ -66,7 +66,7 @@ is_deeply {$res->values}, {a_field => ['FOOBAR']},
 
                           # Type   TypeCoercion      CodeRef
 foreach my $coercion_from (UCOnly, UCOnly->coercion, UCOnly->coercion->_compiled_type_coercion) {
-    my $form = Form::Functional->new(
+    my $form = Form::Functional::Form->new(
         fields => [
             a_field => FieldBuilder->make({
                 as => ['Discrete'],

@@ -4,7 +4,7 @@ use warnings;
 use Test::More;
 use Test::Exception;
 use MooseX::Types::Moose qw/Str/;
-use Form::Functional;
+use Form::Functional::Form;
 
 use aliased 'Form::Functional::FieldBuilder';
 
@@ -17,7 +17,7 @@ my $field = FieldBuilder->make({
     },
 });
 
-my $form = Form::Functional->new(
+my $form = Form::Functional::Form->new(
     fields => [
         a_field => $field,
         another_field => FieldBuilder->make({

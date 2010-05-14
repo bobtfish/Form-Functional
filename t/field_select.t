@@ -2,10 +2,10 @@ use strict;
 use warnings;
 use Test::More;
 
-use Form::Functional;
+use Form::Functional::Form;
 use Form::Functional::FieldBuilder;
 
-my $form = Form::Functional->new({
+my $form = Form::Functional::Form->new({
     fields => [
         foo => Form::Functional::FieldBuilder->make({
             as   => [qw(Select Single)],
@@ -30,7 +30,7 @@ my $form = Form::Functional->new({
     type_constraints => [],
 });
 
-isa_ok($form, 'Form::Functional');
+isa_ok($form, 'Form::Functional::Form');
 
 {
     my $res = $form->process({ values => { foo => ['moo'] } });

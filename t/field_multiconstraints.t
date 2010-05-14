@@ -5,12 +5,12 @@ use lib "$Bin/lib";
 
 use Test::More;
 use MooseX::Types::Moose qw/Str/;
-use Form::Functional;
+use Form::Functional::Form;
 
 use aliased 'Form::Functional::FieldBuilder';
 use TestTypes qw/ UCOnly /;
 
-my $form = Form::Functional->new(
+my $form = Form::Functional::Form->new(
     fields => [
         a_field => FieldBuilder->make({
             as   => ['Discrete'],
