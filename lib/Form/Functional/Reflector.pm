@@ -17,7 +17,7 @@ has form_class => (
     isa => ClassName,
     is => 'ro',
     coerce => 1,
-    default => 'Form::Functional',
+    default => 'Form::Functional::Form',
 );
 
 has field_builder => (
