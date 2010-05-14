@@ -43,7 +43,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
     my $form;
 
     lives_ok { isa_ok $form = $reflector->generate_form_from('TestReflectedClass'), 'Form::Functional' };
-    lives_ok { isa_ok $reflector->generate_form_from(TestReflectedClass->meta), 'Form::Functional' };
+    lives_ok { isa_ok $reflector->generate_form_from(TestReflectedClass->meta), 'Form::Functional::Form' };
 
     my @ok = (
         { req_int => 1, req_str => 'foo' },

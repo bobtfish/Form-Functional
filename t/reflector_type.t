@@ -36,7 +36,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
         @$extra
     ];
 
-    my $form; isa_ok $form = $reflector->generate_form_from($tc), 'Form::Functional';
+    my $form; isa_ok $form = $reflector->generate_form_from($tc), 'Form::Functional::Form';
 
     my @ok = (
         { req_int => 1, req_str => 'foo' },
