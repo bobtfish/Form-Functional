@@ -40,7 +40,7 @@ use aliased 'Form::Functional::FieldBuilder';
 
     method _build_year_field {
         return FieldBuilder->make({
-            as   => ['Select'],
+            as   => ['Discrete', 'Select'],
             with => {
                 coerce           => 0,
                 required         => 1,
@@ -52,7 +52,7 @@ use aliased 'Form::Functional::FieldBuilder';
 
     method _build_month_field {
         return FieldBuilder->make({
-            as   => ['Select'],
+            as   => ['Discrete', 'Select'],
             with => {
                 coerce           => 0,
                 required         => 1,
@@ -64,7 +64,7 @@ use aliased 'Form::Functional::FieldBuilder';
 
     method _build_day_field {
         return FieldBuilder->make({
-            as   => ['Select'],
+            as   => ['Discrete', 'Select'],
             with => {
                 coerce           => 0,
                 required         => 1,

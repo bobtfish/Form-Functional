@@ -8,7 +8,7 @@ use Form::Functional::FieldBuilder;
 my $form = Form::Functional::Form->new({
     fields => [
         foo => Form::Functional::FieldBuilder->make({
-            as   => [qw(Select Single)],
+            as   => [qw(Discrete Select Single)],
             with => {
                 valid_options    => [qw(affe birne tiger)],
                 type_constraints => [],
@@ -17,7 +17,7 @@ my $form = Form::Functional::Form->new({
             },
         }),
         bar => Form::Functional::FieldBuilder->make({
-            as   => [qw(Select)],
+            as   => [qw(Discrete Select)],
             with => {
                 valid_options    => ['a' .. 'f'],
                 type_constraints => [],
