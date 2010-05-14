@@ -6,22 +6,28 @@ use Test::Exception;
 use MooseX::Types::Moose qw/Str/;
 use Form::Functional;
 
-use aliased 'Form::Functional::Field';
+use aliased 'Form::Functional::FieldBuilder';
 
-my $field = Field->new({
-    coerce => 0,
-    required => 1,
-    type_constraints => [ Str ],
+my $field = FieldBuilder->make({
+    as   => ['Discrete'],
+    with => {
+        coerce => 0,
+        required => 1,
+        type_constraints => [ Str ],
+    },
 });
 
 my $form = Form::Functional->new(
     fields => [
         a_field => $field,
-        another_field => Field->new(
-            coerce => 0,
-            required => 0,
-            type_constraints => [ Str ],
-        ),
+        another_field => FieldBuilder->make({
+            as   => ['Discrete'],
+            with => {
+                coerce => 0,
+                required => 0,
+                type_constraints => [ Str ],
+            },
+        }),
     ],
     required         => 1,
     type_constraints => [],

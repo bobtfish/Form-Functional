@@ -7,16 +7,19 @@ use Test::More;
 use MooseX::Types::Moose qw/Str/;
 use Form::Functional;
 
-use aliased 'Form::Functional::Field';
+use aliased 'Form::Functional::FieldBuilder';
 use TestTypes qw/ UCOnly /;
 
 my $form = Form::Functional->new(
     fields => [
-        a_field => Field->new(
-            coerce => 0,
-            required => 1,
-            type_constraints => [ Str, UCOnly ],
-        ),
+        a_field => FieldBuilder->make({
+            as   => ['Discrete'],
+            with => {
+                coerce           => 0,
+                required         => 1,
+                type_constraints => [ Str, UCOnly ],
+            },
+        }),
     ],
     required         => 1,
     type_constraints => [],

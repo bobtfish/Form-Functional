@@ -74,6 +74,32 @@ role {
         my ($self) = @_;
         return { $self->fields };
     };
+
+    method _build__with_init_value_trait => sub {
+        'Form::Functional::Field::WithInitValue::Compound'
+    };
+
+    method clone_with_init_value => sub {
+        my ($self, $value) = @_;
+        defined $_ && confess $_ for HashRef->validate($value);
+
+        my %fields = $self->fields;
+        my %cloned_fields = map {
+            ($_ => (exists $value->{$_}
+                        ? $fields{$_}->clone_with_init_value($value->{$_})
+                        : $fields{$_}->clone)) # necessary? or could they share the ref?
+        } keys %fields;
+
+        my $clone = $self->clone(fields => [%cloned_fields]);
+        $self->_with_init_value_trait->apply(
+            $clone,
+            rebless_params => {
+                init_value => $value,
+            },
+        );
+    };
+
+    with 'Form::Functional::FieldAtom';
 };
 
 1;
