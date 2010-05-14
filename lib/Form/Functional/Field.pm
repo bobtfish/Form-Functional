@@ -4,7 +4,7 @@ package Form::Functional::Field;
 use Moose;
 use Method::Signatures::Simple;
 use MooseX::Types::Moose qw(Bool ArrayRef);
-use MooseX::Types::LoadableClass qw(ClassName);
+use MooseX::Types::LoadableClass qw(LoadableClass);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 use Form::Functional::Types qw(ConstraintList FieldCoercion IntersectionTypeConstraint RequiredMessage);
 use aliased 'Moose::Meta::TypeCoercion';
@@ -72,7 +72,7 @@ has coercion => (
 
 has error_class => (
     is      => 'ro',
-    isa     => ClassName,
+    isa     => LoadableClass,
     coerce  => 1,
     default => 'Form::Functional::Error',
     handles => {
