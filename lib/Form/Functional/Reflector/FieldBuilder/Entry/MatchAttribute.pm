@@ -5,8 +5,7 @@ use Form::Functional::Reflector::Types qw/ Attribute /;
 use namespace::autoclean;
 
 method match ($item) {
-    my $res = is_Attribute($item) && $item->has_init_arg;
-    return $res;
+    is_Attribute($item) && $item->has_init_arg;
 }
 
 with 'Form::Functional::Reflector::FieldBuilder::Entry::Role::MatchOnly';
