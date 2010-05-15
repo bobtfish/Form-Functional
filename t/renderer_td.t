@@ -6,33 +6,35 @@ use Test::Moose;
 use HTML::TreeBuilder;
 
 use MooseX::Types::Moose qw/ Int Str /;
-use Form::Functional::Form;
 
 use aliased 'Form::Functional::FieldBuilder';
 use aliased 'Form::Functional::Renderer::TD' => 'Renderer';
 
-my $form = Form::Functional::Form->new(
-    required         => 1,
-    type_constraints => [],
-    fields           => [
-        int_field => FieldBuilder->make({
-            as => ['Discrete'],
-            with => {
-                coerce           => 0,
-                required         => 1,
-                type_constraints => [ Int ],
-            },
-        }),
-        str_field => FieldBuilder->make({
-            as => ['Discrete'],
-            with => {
-                coerce           => 0,
-                required         => 1,
-                type_constraints => [ Str ],
-            },
-        }),
-    ],
-);
+my $form = FieldBuilder->make({
+    as => ['Compound'],
+    with => {
+        required         => 1,
+        type_constraints => [],
+        fields           => [
+            int_field => FieldBuilder->make({
+                as => ['Discrete'],
+                with => {
+                    coerce           => 0,
+                    required         => 1,
+                    type_constraints => [ Int ],
+                },
+            }),
+            str_field => FieldBuilder->make({
+                as => ['Discrete'],
+                with => {
+                    coerce           => 0,
+                    required         => 1,
+                    type_constraints => [ Str ],
+                },
+            }),
+        ],
+    },
+});
 my $renderer = Renderer->new;
 ok $renderer, 'Have renderer';
 does_ok $renderer, 'Form::Functional::Renderer';
