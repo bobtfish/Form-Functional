@@ -7,6 +7,7 @@ use Method::Signatures::Simple;
 use MooseX::Types::Structured qw(Dict);
 use MooseX::Types::Moose qw(HashRef ArrayRef Str);
 use MooseX::Types::LoadableClass qw(LoadableClass LoadableRole);
+use Moose::Util::TypeConstraints;
 use String::RewritePrefix;
 use namespace::autoclean;
 

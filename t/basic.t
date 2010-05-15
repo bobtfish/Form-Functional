@@ -4,7 +4,6 @@ use warnings;
 use Test::More;
 use Test::Exception;
 use MooseX::Types::Moose qw/Str/;
-use Form::Functional::Form;
 
 use aliased 'Form::Functional::FieldBuilder';
 
@@ -17,21 +16,24 @@ my $field = FieldBuilder->make({
     },
 });
 
-my $form = Form::Functional::Form->new(
-    fields => [
-        a_field => $field,
-        another_field => FieldBuilder->make({
-            as   => ['Discrete'],
-            with => {
-                coerce => 0,
-                required => 0,
-                type_constraints => [ Str ],
-            },
-        }),
-    ],
-    required         => 1,
-    type_constraints => [],
-);
+my $form = FieldBuilder->make({
+    as => ['Form'],
+    with => {
+        fields => [
+            a_field => $field,
+            another_field => FieldBuilder->make({
+                as   => ['Discrete'],
+                with => {
+                    coerce => 0,
+                    required => 0,
+                    type_constraints => [ Str ],
+                },
+            }),
+        ],
+        required         => 1,
+        type_constraints => [],
+    },
+});
 
 ok $form, 'Have form';
 can_ok $form, 'process';

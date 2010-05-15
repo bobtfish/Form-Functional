@@ -2,28 +2,30 @@ use strict;
 use warnings;
 use Test::More;
 
-use Form::Functional::Form;
-use Form::Functional::FieldBuilder;
+use aliased 'Form::Functional::FieldBuilder';
 
-my $form = Form::Functional::Form->new({
-    type_constraints => [],
-    required         => 1,
-    fields           => [
-        foo => Form::Functional::FieldBuilder->make({
-            as   => ['Discrete'],
-            with => {
-                type_constraints => [],
-                required         => 1,
-            },
-        }),
-        bar => Form::Functional::FieldBuilder->make({
-            as   => ['Discrete'],
-            with => {
-                type_constraints => [],
-                required         => 0,
-            },
-        }),
-    ],
+my $form = FieldBuilder->make({
+    as => ['Form'],
+    with => {
+        type_constraints => [],
+        required         => 1,
+        fields           => [
+            foo => FieldBuilder->make({
+                as   => ['Discrete'],
+                with => {
+                    type_constraints => [],
+                    required         => 1,
+                },
+            }),
+            bar => FieldBuilder->make({
+                as   => ['Discrete'],
+                with => {
+                    type_constraints => [],
+                    required         => 0,
+                },
+            }),
+        ],
+    },
 });
 
 my $with_init = $form->clone_with_init_value({ bar => 23 });
