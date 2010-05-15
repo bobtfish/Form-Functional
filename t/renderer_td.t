@@ -11,7 +11,7 @@ use aliased 'Form::Functional::FieldBuilder';
 use aliased 'Form::Functional::Renderer::TD' => 'Renderer';
 
 my $form = FieldBuilder->make({
-    as => ['Compound'],
+    as => ['Compound', 'WithRenderData'],
     with => {
         required         => 1,
         type_constraints => [],
@@ -33,6 +33,11 @@ my $form = FieldBuilder->make({
                 },
             }),
         ],
+        render_data => {
+            method => 'POST',
+            action => 'http://www.foo.com/bar',
+            legend => 'My form',
+        }
     },
 });
 my $renderer = Renderer->new;
@@ -62,6 +67,10 @@ sub test_output {
     my $tree = HTML::TreeBuilder->new_from_content($out);
     my $form = $tree->look_down('_tag', 'form');
     ok $form->as_HTML;
+    is $form->attr('method'), 'POST';
+    is $form->attr('action'), 'http://www.foo.com/bar';
+    my $legend = $form->look_down('_tag', 'legend');
+    is $legend->content->[0], 'My form';
     my $int_f_tag = $form->look_down('_tag', 'input', sub {shift->attr('name') eq 'int_field'});
     ok $int_f_tag->as_HTML;
     is $int_f_tag->attr('type'), 'text';
