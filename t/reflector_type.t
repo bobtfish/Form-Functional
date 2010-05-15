@@ -5,6 +5,7 @@ use lib "$Bin/lib";
 
 use Test::More;
 use Test::Exception;
+use Test::Moose;
 
 use MooseX::Types::Structured qw/ Dict Optional slurpy /;
 use MooseX::Types::Moose qw/ Str Int HashRef /;
@@ -36,7 +37,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
         @$extra
     ];
 
-    my $form; isa_ok $form = $reflector->generate_form_from($tc), 'Form::Functional::Form';
+    my $form; does_ok $form = $reflector->generate_form_from($tc), 'Form::Functional::Field::Compound';
 
     my @ok = (
         { req_int => 1, req_str => 'foo' },

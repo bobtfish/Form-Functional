@@ -13,13 +13,6 @@ requires qw/
     get_fields_from_reflectee
 /;
 
-has form_class => (
-    isa => ClassName,
-    is => 'ro',
-    coerce => 1,
-    default => 'Form::Functional::Form',
-);
-
 has field_builder => (
     isa => FieldBuilderEntry,
     is => 'ro',
@@ -48,11 +41,14 @@ method build_field ($field) {
 }
 
 method build_form_from_fields (@fields) {
-    $self->form_class->new(
-        fields => \@fields,
-        required         => 1,
-        type_constraints => [],
-    );
+    FormFieldBuilder->make({
+        as => ['Compound'],
+        with => {
+            fields => \@fields,
+            required         => 1,
+            type_constraints => [],
+        },
+    });
 }
 
 1;

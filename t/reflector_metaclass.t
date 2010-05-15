@@ -6,6 +6,7 @@ use Devel::Dwarn;
 
 use Test::More;
 use Test::Exception;
+use Test::Moose;
 
 use Class::MOP::Class;
 use TestReflectedClass;
@@ -42,8 +43,8 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
 {
     my $form;
 
-    lives_ok { isa_ok $form = $reflector->generate_form_from('TestReflectedClass'), 'Form::Functional::Form' };
-    lives_ok { isa_ok $reflector->generate_form_from(TestReflectedClass->meta), 'Form::Functional::Form' };
+    lives_ok { does_ok $form = $reflector->generate_form_from('TestReflectedClass'), 'Form::Functional::Field::Compound' };
+    lives_ok { does_ok $reflector->generate_form_from(TestReflectedClass->meta), 'Form::Functional::Field::Compound' };
 
     my @ok = (
         { req_int => 1, req_str => 'foo' },
@@ -73,7 +74,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
 
 {
     my $form;
-    lives_ok { isa_ok $form = $reflector->generate_form_from('TestReflectedClassCompound'), 'Form::Functional::Form' };
+    lives_ok { does_ok $form = $reflector->generate_form_from('TestReflectedClassCompound'), 'Form::Functional::Field::Compound' };
 
     my @ok = (
         { req_int => 1, req_str => 'foo', delegate => { req_int => 1, req_str => 'foo' } },
