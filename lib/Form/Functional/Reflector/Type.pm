@@ -23,6 +23,9 @@ method validate_reflectee ($type_or_name){
         unless $tc;
     confess "$tc is not a Moose::Meta::TypeConstraint"
         unless $tc->isa('Moose::Meta::TypeConstraint');
+    # FIXME - reflecting on something that's not a subtype of HashRef
+    #         is entirely valid. the result just won't be a compound
+    #         field.
     confess "$tc is not a Dict"
         unless $tc->is_a_type_of(Dict);
     return $tc;
