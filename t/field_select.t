@@ -1,36 +1,39 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Moose;
 
-use Form::Functional::Form;
-use Form::Functional::FieldBuilder;
+use aliased 'Form::Functional::FieldBuilder';
 
-my $form = Form::Functional::Form->new({
-    fields => [
-        foo => Form::Functional::FieldBuilder->make({
-            as   => [qw(Discrete Select Single)],
-            with => {
-                valid_options    => [qw(affe birne tiger)],
-                type_constraints => [],
-                coerce           => 0,
-                required         => 0,
-            },
-        }),
-        bar => Form::Functional::FieldBuilder->make({
-            as   => [qw(Discrete Select)],
-            with => {
-                valid_options    => ['a' .. 'f'],
-                type_constraints => [],
-                coerce           => 0,
-                required         => 1,
-            },
-        }),
-    ],
-    required         => 1,
-    type_constraints => [],
+my $form = FieldBuilder->make({
+    as => ['Compound'],
+    with => {
+        fields => [
+            foo => FieldBuilder->make({
+                as   => [qw(Discrete Select Single)],
+                with => {
+                    valid_options    => [qw(affe birne tiger)],
+                    type_constraints => [],
+                    coerce           => 0,
+                    required         => 0,
+                },
+            }),
+            bar => FieldBuilder->make({
+                as   => [qw(Discrete Select)],
+                with => {
+                    valid_options    => ['a' .. 'f'],
+                    type_constraints => [],
+                    coerce           => 0,
+                    required         => 1,
+                },
+            }),
+        ],
+        required         => 1,
+        type_constraints => [],
+    },
 });
 
-isa_ok($form, 'Form::Functional::Form');
+does_ok($form, 'Form::Functional::Field::Compound');
 
 {
     my $res = $form->process({ values => { foo => ['moo'] } });
