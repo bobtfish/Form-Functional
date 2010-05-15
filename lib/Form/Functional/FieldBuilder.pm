@@ -9,6 +9,7 @@ use MooseX::Types::Moose qw(HashRef ArrayRef Str);
 use MooseX::Types::LoadableClass qw(LoadableClass LoadableRole);
 use Moose::Util::TypeConstraints;
 use String::RewritePrefix;
+use Data::OptList;
 use namespace::autoclean;
 
 has field_class_prefix => (
@@ -32,7 +33,7 @@ has field_role_prefix => (
 
 method make ($class_or_self: $args) {
     defined $_ && confess $_ for (Dict[
-        as   => ArrayRef[Str],
+        as   => ArrayRef[Str|HashRef],
         with => HashRef,
     ])->validate($args);
 
@@ -40,20 +41,22 @@ method make ($class_or_self: $args) {
         ? $class_or_self
         : $class_or_self->new;
 
-    my @roles = String::RewritePrefix->rewrite(
+    my $roles = Data::OptList::mkopt($args->{as});
+
+    foreach my $role (@$roles) {
+        $role->[0] = to_LoadableRole( String::RewritePrefix->rewrite(
             { '' => $self->field_role_prefix . q{::}, '+' => '' },
-            @{ $args->{as} }
-    );
-    my $name = join q{::} => $self->field_class_prefix, join q{_} => sort @roles;
+            $role->[0]
+        ));
+    }
+    my $name = join q{::} => $self->field_class_prefix, join q{_} => sort map { $_->[0] } @$roles;
 
     my $meta = Class::MOP::is_class_loaded($name)
         ? find_meta($name)
         : Moose::Meta::Class->create(
         $name,
         superclasses => [$self->field_base_class],
-        roles        => [
-            map { to_LoadableRole( $_ ) } @roles
-        ],
+        roles        => [ grep { defined $_ } map { @$_ } @$roles ],
     );
 
     return $meta->name->new($args->{with});
