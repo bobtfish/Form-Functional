@@ -17,7 +17,7 @@ my $field = FieldBuilder->make({
 });
 
 my $form = FieldBuilder->make({
-    as => ['Form'],
+    as => ['Compound'],
     with => {
         fields => [
             a_field => $field,

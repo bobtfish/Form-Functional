@@ -5,7 +5,7 @@ use Test::More;
 use aliased 'Form::Functional::FieldBuilder';
 
 my $form = FieldBuilder->make({
-    as => ['Form'],
+    as => ['Compound'],
     with => {
         type_constraints => [],
         required         => 1,

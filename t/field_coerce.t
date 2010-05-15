@@ -44,7 +44,7 @@ throws_ok {
 } qr/more than one type constraint/, 'More than one TC without explicit coercion message';
 
 my $form = FieldBuilder->make({
-    as => ['Form'],
+    as => ['Compound'],
     with => {
         fields => [
             a_field => FieldBuilder->make({
@@ -69,7 +69,7 @@ is_deeply {$res->values}, {a_field => ['FOOBAR']},
                           # Type   TypeCoercion      CodeRef
 foreach my $coercion_from (UCOnly, UCOnly->coercion, UCOnly->coercion->_compiled_type_coercion) {
     my $form = FieldBuilder->make({
-        as => ['Form'],
+        as => ['Compound'],
         with => {
             fields => [
                 a_field => FieldBuilder->make({

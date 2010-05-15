@@ -75,7 +75,7 @@ use aliased 'Form::Functional::FieldBuilder';
 }
 
 my $form = FieldBuilder->make({
-    as => ['Form'],
+    as => ['Compound'],
     with => {
         required         => 1,
         type_constraints => [],

@@ -10,7 +10,7 @@ use aliased 'Form::Functional::FieldBuilder';
 use TestTypes qw/ UCOnly /;
 
 my $form = FieldBuilder->make({
-    as => ['Form'],
+    as => ['Compound'],
     with => {
         fields => [
             a_field => FieldBuilder->make({

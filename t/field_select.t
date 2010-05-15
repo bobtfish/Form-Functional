@@ -6,7 +6,7 @@ use Test::Moose;
 use aliased 'Form::Functional::FieldBuilder';
 
 my $form = FieldBuilder->make({
-    as => ['Form'],
+    as => ['Compound'],
     with => {
         fields => [
             foo => FieldBuilder->make({
@@ -33,7 +33,7 @@ my $form = FieldBuilder->make({
     },
 });
 
-does_ok($form, 'Form::Functional::Field::Form');
+does_ok($form, 'Form::Functional::Field::Compound');
 
 {
     my $res = $form->process({ values => { foo => ['moo'] } });
