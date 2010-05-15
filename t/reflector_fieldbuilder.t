@@ -11,7 +11,7 @@ use aliased 'MockFieldBuilderEntry' => 'Entry';
 
 my $test_attr = FieldBuilder->meta->find_attribute_by_name('entries');
 {
-    my $fb = FieldBuilder->new;
+    my $fb = FieldBuilder->new(entries => []);
     ok $fb, 'Have empty field builder';
     is_deeply [$fb->entries], [], 'entries is empty';
     throws_ok { $fb->resolve } qr/Cannot resolve item 'undef', is not a Form::Functional::Reflector::Types::Attribute/,

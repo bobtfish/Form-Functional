@@ -2,7 +2,7 @@ package Form::Functional::Reflector;
 use Moose::Role;
 use MooseX::Method::Signatures;
 use MooseX::Types::LoadableClass qw/ClassName/;
-use Form::Functional::Reflector::Types qw/ FieldBuilder TypeMap /;
+use Form::Functional::Reflector::Types qw/ FieldBuilderEntry TypeMap /;
 use namespace::autoclean;
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Default' => 'DefaultFieldBuilder';
@@ -21,7 +21,7 @@ has form_class => (
 );
 
 has field_builder => (
-    isa => FieldBuilder,
+    isa => FieldBuilderEntry,
     is => 'ro',
     required => 1,
     default => sub { DefaultFieldBuilder->new },

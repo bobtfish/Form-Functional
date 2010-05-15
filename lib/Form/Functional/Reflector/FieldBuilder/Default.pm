@@ -3,7 +3,9 @@ use Moose;
 use Method::Signatures::Simple;
 use namespace::autoclean;
 
-extends 'Form::Functional::Reflector::FieldBuilder';
+with 'Form::Functional::Reflector::FieldBuilder::Entry::Role::Multiplex' => {
+    entries_from => 'builder',
+};
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::MatchAttribute';
 use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::RequiredFromAttribute';
