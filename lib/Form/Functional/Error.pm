@@ -25,4 +25,16 @@ has failed_type_constraint => (
     predicate => 'has_failed_type_constraint',
 );
 
+__PACKAGE__->meta->make_immutable
 1;
+__END__
+
+=head1 SYNOPSIS
+
+=attr message
+
+=attr arguments
+
+=attr failed_type_constraint
+
+=cut

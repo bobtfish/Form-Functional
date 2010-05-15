@@ -56,3 +56,23 @@ method build_form_from_fields (@fields) {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 ATTRIBUTES
+
+=attr form_class
+
+=attr field_builder
+
+=head1 METHODS
+
+=method build_field
+
+=method build_form_from_fields
+
+=method generate_form_from
+
+=cut

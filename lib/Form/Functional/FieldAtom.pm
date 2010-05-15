@@ -149,3 +149,25 @@ method _build_required_message_cb {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 ATTRIBUTES
+
+=attr required
+
+=attr required_message_cb
+
+=attr type_constraint
+
+=attr type_constraints
+
+=attr coerce
+
+=attr coercion
+
+=attr error_class
+
+=cut
