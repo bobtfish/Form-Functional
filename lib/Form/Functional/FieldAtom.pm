@@ -102,9 +102,12 @@ around BUILDARGS => sub {
     };
 };
 
-method BUILD {
+method BUILD {}
+
+after BUILD => sub {
+    my ($self) = shift;
     $self->_build_type_constraint;
-}
+};
 
 method _build_type_constraint {
     my $tc = Intersection->new(
