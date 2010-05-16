@@ -1,0 +1,9 @@
+TODO:
+
+  - Error api
+  - Class reflector to check ClassName and auto construct
+  - Class reflector to use the type reflector when it finds a Dict
+  - Type reflector to generate compound field from sub Dict
+  - Type reflector to use the class reflector when it finds a class instance
+  - More work on the renderer
+  - Steal renderer logic from FormHandler / F::Sensible

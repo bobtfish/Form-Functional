@@ -49,6 +49,7 @@ method make ($class_or_self: $args) {
             $role->[0]
         ));
     }
+    # FIXME - This is not unique - Roles Foo and Bar vs Role Foo_Bar
     my $name = join q{::} => $self->field_class_prefix, join q{_} => sort map { $_->[0] } @$roles;
 
     my $meta = Class::MOP::is_class_loaded($name)
