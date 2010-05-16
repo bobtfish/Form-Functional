@@ -27,7 +27,7 @@ method render_form ($form) {
 }
 
 method render_processed ($processed) {
-    return Template::Declare->show(processed => $processed);
+    return Template::Declare->show(processed_form => $processed);
 }
 
 with 'Form::Functional::Renderer';
