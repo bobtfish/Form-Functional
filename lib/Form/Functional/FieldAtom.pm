@@ -13,6 +13,25 @@ use namespace::autoclean;
 
 with 'MooseX::Clone';
 
+=method clone
+
+From L<MooseX::Clone>, allows the trivial cloning of fields (whilst overriding
+some) attributes.
+
+=attr required
+
+Boolean representing if a value must be supplied for this field
+
+Note that the reader for this attribute is named L</is_required>.
+
+=method is_required
+
+A predicate method returning the values of the L</required> atttribute.
+Signifies if this field is required for the containing form (or compound field)
+to validate.
+
+=cut
+
 has required => (
     isa      => Bool,
     required => 1,
@@ -32,6 +51,13 @@ has required_message_cb => (
     },
 );
 
+=attr type_constraint
+
+The intersection of all type constraints for this field (i.e. to fulfil this)
+type constraint, all type constraints must pass.
+
+=cut
+
 has type_constraint => (
     is       => 'ro',
     isa      => IntersectionTypeConstraint,
@@ -39,6 +65,12 @@ has type_constraint => (
     lazy     => 1,
     builder  => '_build_type_constraint',
 );
+
+=attr type_constraints
+
+A list of type constraints associcated with this field.
+
+=cut
 
 has type_constraints => (
     traits   => [qw(Array)],
@@ -51,11 +83,31 @@ has type_constraints => (
     },
 );
 
+=attr coerce
+
+A boolean representing if the type constraint(s) for this field will try to
+coerce the user supplied value(s) before checking.
+
+If an explicit coercion is supplied, then coercion will be automatically
+enabled.
+
+=cut
+
 has coerce => (
     isa     => Bool,
     default => 0,
     reader  => 'should_coerce',
 );
+
+=attr coercion
+
+THe coercion for this field.
+
+If there is only one type constraint for this field then the coercion on that type
+constraint (if present) will automatically be used. Alternatively (and in cases where
+the field has more than one type constraint), the coercion can be supplied.
+
+=cut
 
 has coercion => (
     is        => 'ro',
@@ -65,6 +117,15 @@ has coercion => (
     builder   => '_build_coercion',
     predicate => 'has_coercion'
 );
+
+=attr error_class
+
+The class which should be used to report validation errors for this field.
+
+This class should duck type L<Form::Functional::Error>, as it will be constructed
+with the attribues for that class, but it is not required to inherit from it.
+
+=cut
 
 has error_class => (
     is      => 'ro',
@@ -152,3 +213,10 @@ method _build_required_message_cb {
 }
 
 1;
+
+=head1 DESCRIPTION
+
+This role encapsulates all the common functionality for form fields.
+
+=cut
+

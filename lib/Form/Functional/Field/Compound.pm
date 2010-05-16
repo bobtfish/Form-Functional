@@ -17,6 +17,12 @@ parameter fields_options => (
 role {
     my ($p) = @_;
 
+=attr fields
+
+FIXME
+
+=cut
+
     has fields => (
         traits   => [qw(Array)],
         isa      => Fields,
@@ -25,6 +31,16 @@ role {
         },
         %{ $p->fields_options },
     );
+
+=attr fields_by_name
+
+FIXME
+
+=method find_field_by_name
+
+=method find_fields_by_name
+
+=cut
 
     has fields_by_name => (
         traits   => [qw(Hash)],
@@ -37,6 +53,10 @@ role {
             find_fields_by_name => 'get',
         },
     );
+
+=has processed_class
+
+The class to generate an instance of for storing the results of processing
 
     has processed_class => (
         is      => 'ro',
