@@ -80,38 +80,39 @@ sub _build_form_data {
         form => $form,
         render_data => $render_data,
     );
-    $data{form_id} = "form_" . refaddr($data{form}) unless $data{render_data}->{id};
+    $data{form_id} = $render_data->{id} if $render_data->{id};
     return %data;
 }
 
 template processed_field => sub {
     my ($self, $processed, $name, $field, $form_id) = @_;
-    span {
-        with (
-            name  => $name,
-            field => $field,
-            form_id => $form_id,
-        ), make_input {
-            ($processed->values_for($name))[0] # FIXME!
-                if $processed->values_exist_for($name);
-        };
-        if (my $errors = {$processed->errors}->{$name}) {
-            foreach my $error ($errors->flatten) {
-                div {
-                    attr {
-                        class => 'error'
-                    };
-                    $error->message;
+    with (
+        name  => $name,
+        field => $field,
+        form_id => $form_id,
+    ), make_input {
+        ($processed->values_for($name))[0] # FIXME!
+            if $processed->values_exist_for($name);
+    };
+    if (my $errors = {$processed->errors}->{$name}) {
+        foreach my $error ($errors->flatten) {
+            div {
+                attr {
+                    class => 'error'
                 };
+                $error->message;
             };
-        }
+        };
     }
 };
 
 template form => sub {
     my ($self, $form) = @_;
 
-    with ( $self->_build_form_data($form, $form->can('render_data') ? $form->render_data : {}) ),
+    with (
+        form_id => "form_" . refaddr($form),
+        $self->_build_form_data($form, $form->can('render_data') ? $form->render_data : {}),
+    ),
     make_form {
         my ($name, $field, $form_id) = @_;
         show field => $form, $name, $field, $form_id;
@@ -121,7 +122,11 @@ template form => sub {
 template processed_form => sub {
     my ($self, $processed) = @_;
 
-    with ($self->_build_form_data($processed, $processed->field->can('render_data') ? $processed->field->render_data : {})),
+    my %render_data = $self->_build_form_data($processed, $processed->field->can('render_data') ? $processed->field->render_data : {});
+    with (
+        form_id => "form_" . refaddr($processed->field),
+        %render_data,
+    ),
     make_form {
         my ($name, $field, $form_id) = @_;
         show processed_field => $processed, $name, $field, $form_id;
