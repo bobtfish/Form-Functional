@@ -1,4 +1,5 @@
 package Form::Functional::Field::WithInitValue::Discrete;
+# ABSTRACT: A role for fields with discrete initial values.
 
 use Moose::Role;
 use MooseX::Types::Moose qw(Value Undef);

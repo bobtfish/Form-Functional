@@ -7,6 +7,12 @@ use Moose::Util::TypeConstraints;
 use MooseX::Types::Moose qw(ArrayRef Str);
 use namespace::autoclean;
 
+=attr valid_options
+
+A list of options valid for this select field.
+
+=cut
+
 has valid_options => (
     traits   => [qw(Array)],
     isa      => ArrayRef[Str],

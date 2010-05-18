@@ -78,6 +78,72 @@ __PACKAGE__->meta->make_immutable;
 
 __END__
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
+
+A set of Moose types used by Form::Functional
+
+=head1 TYPES
+
+=head2 CompoundField
+
+Does the role L<Form::Functional::Field::Compound>.
+
+=head2 Field
+
+Is the class L<Form::Functional::Field> (or a subclass therof).
+
+=head2 Fields
+
+An array ref of pairs of C<Str>s and C<Field>s, containing no duplicate C<Str>s.
+
+=head2 TypeConstraint
+
+An instance of a class which isa L<Moose::Meta::TypeConstraint>.
+
+=head2 TypeCoercion
+
+A instance of a class which isa L<Moose::Meta::TypeCoercion>.
+
+=head2 IntersectionTypeConstraint
+
+An instance of a class which isa L<MooseX::Meta::TypeConstraint::Intersection>.
+
+=head2 ConstraintList
+
+An C<ArrayRef> of C<TypeConstraint>s. Coerces from C<TypeConstraint> by wrapping
+the constraint in an array ref.
+
+=head2 FieldCoercion
+
+A C<CodeRef> which can be used to coerce the value for a field.
+
+Coerces from a C<TypeCoercion> by extracting the coderef.
+
+Coerces from a C<TypeConstraint> by extracting the associated C<TypeCoercion>
+and extracting the associated C<CodeRef> from that.
+
+=head2 RequiredMessage
+
+A code ref which returns an array.
+
+Coerces from C<ArrayRef> by wrapping the array ref in a closure.
+
+Coerces from C<Str> by wrapping the string in an array ref and a closure.
+
+Coerces from an C<ArrayRef> of C<TypeConstraint>s by extracting the associated
+coercions and applying them in order.
+
+FIXME - This is counter what we do (or advertise to do) for forms/fields,
+where we refuse to build a coercsion when there is more than one coercion.
+
+=head2 InputValues
+
+=head2 Error
+
+An instance of a class which isa L<Form::Functional::Error>
+
+=head2 Errors
+
+An arrayref containing C<Error> or C<Errors>.
 
 =cut
