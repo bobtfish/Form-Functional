@@ -13,9 +13,9 @@ sub make_form (&) {
     my ($cb) = @_;
     smart_tag_wrapper {
         my %params = @_;
-        use Data::Dumper;
-        local $Data::Dumper::Maxdepth = 1;
-        warn Dumper \%params;
+        #use Data::Dumper;
+        #local $Data::Dumper::Maxdepth = 1;
+        #warn Dumper \%params;
         my @fields = $params{form}->fields;
         my %extra;
         if ($params{render_data}) {
@@ -44,7 +44,7 @@ sub make_input (;&) {
         my %params = @_;
         #use Data::Dumper;
         #local $Data::Dumper::Maxdepth = 2;
-        warn Dumper \%params;
+        #warn Dumper \%params;
         my $field_id = $params{form_id} . '_' . $params{name};
         label {
             attr {
