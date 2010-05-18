@@ -1,6 +1,6 @@
 package Form::Functional::Reflector;
 use Moose::Role;
-use MooseX::Method::Signatures;
+use Method::Signatures::Simple;
 use MooseX::Types::LoadableClass qw/ClassName/;
 use Form::Functional::Reflector::Types qw/ FieldBuilderEntry TypeMap /;
 use namespace::autoclean;

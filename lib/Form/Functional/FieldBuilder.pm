@@ -98,7 +98,6 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
-<<<<<<< HEAD
 __END__
 
 =head1 SYNOPSIS
