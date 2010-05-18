@@ -3,7 +3,7 @@ package Form::Functional::Types;
 
 use List::AllUtils qw(natatime);
 use MooseX::Types::Moose qw(Str ArrayRef HashRef CodeRef);
-use MooseX::Types::Structured qw(Map);
+use MooseX::Types::Structured 0.20 qw(Map);
 use MooseX::Types -declare => [qw(
     CompoundField
     Field
