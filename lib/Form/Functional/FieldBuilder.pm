@@ -66,3 +66,17 @@ method make ($class_or_self: $args) {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=attr field_class_prefix
+
+=attr field_role_prefix
+
+=attr field_base_class
+
+=method make
+
+=cut

@@ -4,11 +4,19 @@ use Moose;
 use MooseX::Types::Moose qw(Str ArrayRef);
 use namespace::autoclean;
 
+=attr message
+
+=cut
+
 has message => (
     is => 'ro',
     isa => Str,
     required => 1,
 );
+
+=attr arguments
+
+=cut
 
 has arguments => (
     traits    => [qw(Array)],
@@ -18,6 +26,10 @@ has arguments => (
         arguments => 'elements',
     },
 );
+
+=attr failed_type_constraint
+
+=cut
 
 has failed_type_constraint => (
     is        => 'ro',

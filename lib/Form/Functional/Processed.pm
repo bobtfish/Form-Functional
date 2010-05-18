@@ -142,3 +142,31 @@ method fields_with_errors {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 ATTRIBUTES
+
+=attr field
+
+=attr errors
+
+=attr results
+
+=attr input_values
+
+=attr values
+
+=head1 METHODS
+
+=method values_for
+
+=method values_exist_for
+
+=method has_errors
+
+=method fields_with_errors
+
+=cut
