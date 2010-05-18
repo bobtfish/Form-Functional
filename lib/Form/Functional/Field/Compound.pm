@@ -54,9 +54,11 @@ FIXME
         },
     );
 
-=has processed_class
+=attr processed_class
 
 The class to generate an instance of for storing the results of processing
+
+=cut
 
     has processed_class => (
         is      => 'ro',
