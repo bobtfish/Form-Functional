@@ -33,7 +33,12 @@ sub make_form (&) {
             legend { $params{render_data}->{legend} } if $params{render_data}->{legend};
             while (my ($name, $field) = splice @fields, 0, 2) {
                 $cb->($name, $field, $params{form_id});
-            }
+            };
+            input {
+                attr {
+                    type => 'submit',
+                };
+            };
         };
     };
 }

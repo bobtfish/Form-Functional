@@ -95,6 +95,9 @@ sub test_output {
     ok $str_f_label->as_HTML;
     is [$str_f_label->content_list]->join(''), 'Str field';
 
+    my $submit_tag = $form->look_down('_tag', 'input', sub {shift->attr('type') eq 'submit'});
+    ok $str_f_tag->as_HTML;
+
     return $tree;
 }
 
