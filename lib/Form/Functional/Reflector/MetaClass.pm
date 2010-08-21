@@ -5,7 +5,7 @@ use Moose::Util qw/ find_meta /;
 use namespace::autoclean;
 
 method get_fields_from_reflectee ($meta) {
-    $meta->get_all_attributes;
+    sort { $a->insertion_order <=> $b->insertion_order } $meta->get_all_attributes;
 }
 
 method validate_reflectee ($class_or_meta){

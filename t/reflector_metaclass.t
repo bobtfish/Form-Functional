@@ -31,20 +31,20 @@ Class::MOP::Class->create(
 
 my $reflector = Form::Functional::Reflector::MetaClass->new;
 
-throws_ok { $reflector->generate_form_from('This::Class::Does::Not::Exist') }
+throws_ok { $reflector->generate_output_from('This::Class::Does::Not::Exist') }
     qr/is is loaded/, 'Error for non-existent/non-loaded classes';
 
-throws_ok { $reflector->generate_form_from('Non::Moose::Class') }
+throws_ok { $reflector->generate_output_from('Non::Moose::Class') }
     qr/ould not find metaclass/, 'Error for non-moose (POOP) classes';
 
-throws_ok { $reflector->generate_form_from('CMOPClass') }
+throws_ok { $reflector->generate_output_from('CMOPClass') }
     qr/does not have a Moose metaclass/, 'Error for non-moose (CMOP) classes';
 
 {
     my $form;
 
-    lives_ok { does_ok $form = $reflector->generate_form_from('TestReflectedClass'), 'Form::Functional::Field::Compound' };
-    lives_ok { does_ok $reflector->generate_form_from(TestReflectedClass->meta), 'Form::Functional::Field::Compound' };
+    lives_ok { does_ok $form = $reflector->generate_output_from('TestReflectedClass'), 'Form::Functional::Field::Compound' };
+    lives_ok { does_ok $reflector->generate_output_from(TestReflectedClass->meta), 'Form::Functional::Field::Compound' };
 
     my @ok = (
         { req_int => 1, req_str => 'foo' },
@@ -74,7 +74,7 @@ throws_ok { $reflector->generate_form_from('CMOPClass') }
 
 {
     my $form;
-    lives_ok { does_ok $form = $reflector->generate_form_from('TestReflectedClassCompound'), 'Form::Functional::Field::Compound' };
+    lives_ok { does_ok $form = $reflector->generate_output_from('TestReflectedClassCompound'), 'Form::Functional::Field::Compound' };
 
     my @ok = (
         { req_int => 1, req_str => 'foo', delegate => { req_int => 1, req_str => 'foo' } },

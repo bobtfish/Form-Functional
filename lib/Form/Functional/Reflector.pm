@@ -6,7 +6,8 @@ use Form::Functional::Reflector::Types qw/ FieldBuilderEntry TypeMap /;
 use namespace::autoclean;
 
 use aliased 'Form::Functional::Reflector::FieldBuilder::Default' => 'DefaultFieldBuilder';
-use aliased 'Form::Functional::FieldBuilder' => 'FormFieldBuilder';
+use aliased 'Form::Functional::Reflector::FieldOutputter';
+use aliased 'Form::Functional::Reflector::FieldComposer';
 
 requires qw/
     validate_reflectee
@@ -23,7 +24,29 @@ has field_builder => (
     },
 );
 
-method generate_form_from ($reflectee) {
+has field_outputter => (
+    is => 'ro',
+    required => 1,
+    default => sub {
+        FieldOutputter->new;
+    },
+    handles => {
+        _output_field => 'output_field',
+    },
+);
+
+has field_composer => (
+    is => 'ro',
+    required => 1,
+    default => sub {
+        FieldComposer->new;
+    },
+    handles => {
+        build_form_from_fields => 'output_from_fields',
+    },
+);
+
+method generate_output_from ($reflectee) {
     $reflectee = $self->validate_reflectee($reflectee);
     # FIXME - Ordering
     $self->build_form_from_fields(
@@ -33,22 +56,9 @@ method generate_form_from ($reflectee) {
 }
 
 method build_field ($field) {
-    my %data = $self->resolve_field($field)->data;
     #use Devel::Dwarn;
     #Dwarn \%data;
-                                                                                # FIXME!!!
-    return keys(%data) ? (delete $data{name} => FormFieldBuilder->make({%data, as => ['Discrete']})) : ();
-}
-
-method build_form_from_fields (@fields) {
-    FormFieldBuilder->make({
-        as => ['Compound'],
-        with => {
-            fields => \@fields,
-            required         => 1,
-            type_constraints => [],
-        },
-    });
+    $self->_output_field($self->resolve_field($field))
 }
 
 1;

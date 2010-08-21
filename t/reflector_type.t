@@ -15,13 +15,13 @@ use_ok 'Form::Functional::Reflector::Type'
 
 my $reflector = Form::Functional::Reflector::Type->new;
 
-throws_ok { $reflector->generate_form_from('ThisTypeDoesNotExist') }
+throws_ok { $reflector->generate_output_from('ThisTypeDoesNotExist') }
     qr/not find type constraint named 'ThisTypeDoesNotExist'/, 'Non existant type throws';
 
-throws_ok { $reflector->generate_form_from(bless {}, 'ThisTypeDoesNotExist') }
+throws_ok { $reflector->generate_output_from(bless {}, 'ThisTypeDoesNotExist') }
     qr/is not a Moose::Meta::TypeConstraint/, 'Not a type constraint throws';
 
-throws_ok { $reflector->generate_form_from(Str) }
+throws_ok { $reflector->generate_output_from(Str) }
     qr/is not a Dict/, 'Not a Dict type constraint throws';
 
 foreach my $extra ( [], [slurpy(Dict)] ) {
@@ -37,7 +37,7 @@ foreach my $extra ( [], [slurpy(Dict)] ) {
         @$extra
     ];
 
-    my $form; does_ok $form = $reflector->generate_form_from($tc), 'Form::Functional::Field::Compound';
+    my $form; does_ok $form = $reflector->generate_output_from($tc), 'Form::Functional::Field::Compound';
 
     my @ok = (
         { req_int => 1, req_str => 'foo' },

@@ -7,15 +7,20 @@ with 'Form::Functional::Reflector::FieldBuilder::Entry::Role::Multiplex' => {
     entries_from => 'builder',
 };
 
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::MatchAttribute';
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::RequiredFromAttribute';
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::NameFromAttribute';
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::TypeConstraintFromAttribute';
+use aliased ();
+BEGIN {
+aliased->import($_) for map { 'Form::Functional::Reflector::FieldBuilder::Entry::' . $_ } qw/
+    MatchAttribute
+    RequiredFromAttribute
+    NameFromAttribute
+    TypeConstraintFromAttribute
 
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::MatchTypeConstraint';
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::RequiredFromConstraint';
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::NameFromConstraint';
-use aliased 'Form::Functional::Reflector::FieldBuilder::Entry::TypeConstraintFromConstraint';
+    MatchTypeConstraint
+    RequiredFromConstraint
+    NameFromConstraint
+    TypeConstraintFromConstraint
+/;
+}
 
 method _build_entries { [
     MatchAttribute->chain( {},
