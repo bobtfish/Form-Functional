@@ -1,6 +1,7 @@
 package Form::Functional::Field::WithRenderData;
-use Moose::Role;
+use MooseX::Role::Parameterized;
 use MooseX::Types::Moose qw/ HashRef /;
+use Form::Functional::Types qw/ TypeConstraint /;
 use namespace::autoclean;
 
 # <rafl> i believe WithRenderData should be more structured
@@ -19,10 +20,21 @@ use namespace::autoclean;
 # <t0m> yep
 # <rafl> with the first thing basically just saying what else is there, so huge ->does cascades can be avoided. helper method on exists rendering_metadata->{$thing} or whatever
 
-has render_data => (
+parameter type_constraint => (
+    isa => TypeConstraint, # FIXME - Validate is a sub type of HashRef
     is => 'ro',
-    isa => HashRef,
-    default => sub { {} },
+    default => sub { HashRef() },
 );
+
+role {
+    my $p = shift;
+    my $tc = $p->type_constraint;
+
+    has render_data => (
+        is => 'ro',
+        isa => $tc,
+        default => sub { {} },
+    );
+};
 
 1;
