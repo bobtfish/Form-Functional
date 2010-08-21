@@ -7,9 +7,12 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+__END__
+
 =head1 DESCRIPTION
 
 This class is actually an empty class, as all the functionality is composed from
 one or more roles.
 
 =cut
+

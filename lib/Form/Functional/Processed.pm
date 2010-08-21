@@ -211,6 +211,8 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+__END__
+
 =head1 SYNOPSIS
 
     my $processed = $form->process({ values => { a_field => 'foo', another_field => 'bar' });

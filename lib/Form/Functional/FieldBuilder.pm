@@ -98,6 +98,8 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+__END__
+
 =head1 SYNOPSIS
 
     use Form::Functional::FieldBuilder;

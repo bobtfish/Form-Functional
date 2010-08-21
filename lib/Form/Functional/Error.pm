@@ -16,7 +16,7 @@ has message => (
     required => 1,
 );
 
-=attr
+=attr arguments
 
 The argument (i.e. values) that the field recieved.
 

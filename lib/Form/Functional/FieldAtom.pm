@@ -214,6 +214,8 @@ method _build_required_message_cb {
 
 1;
 
+__END__
+
 =head1 DESCRIPTION
 
 This role encapsulates all the common functionality for form fields.
