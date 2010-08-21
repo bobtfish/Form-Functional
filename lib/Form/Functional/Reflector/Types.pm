@@ -7,6 +7,8 @@ use MooseX::Types -declare => [qw(
     FieldBuilderEntry
     Attribute
     NameAndConstraintPair
+    FieldOutputter
+    FieldComposer
 )];
 use MooseX::Types::Moose qw/ ArrayRef Str /;
 use Form::Functional::Types qw/ TypeConstraint/;
@@ -22,6 +24,9 @@ class_type Attribute, { class => 'Moose::Meta::Attribute' };
 
 subtype NameAndConstraintPair, as ArrayRef,
     where { is_ArrayRef($_) && scalar(@$_) == 2 && is_Str($_->[0]) && is_TypeConstraint($_->[1]) };
+
+role_type FieldComposer, { role => 'Form::Functional::Reflector::FieldComposer' };
+role_type FieldOutputter, { role => 'Form::Functional::Reflector::FieldOutputter' };
 
 __PACKAGE__->meta->make_immutable;
 1;
